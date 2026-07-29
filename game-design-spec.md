@@ -181,6 +181,38 @@ Assets/
 - Build and test one system at a time (e.g., "implement PlayerController movement + jump" → test in-editor → "add WeaponBase + SwordWeapon" → test → etc.)
 - Keep prompts scoped to one script or one feature per session where possible; this matches the phased build order below and keeps generated code easy to review.
 
+### 6.1 Commit Convention (required)
+
+**Every commit message must use this form — no exceptions:**
+
+```
+/<type> <short imperative description>
+```
+
+Example: `/feat add dodge function with i-frames`
+
+Rules:
+- Leading slash, then the type, then a **space** — no colon.
+- Description is lowercase, imperative mood ("add", not "added"/"adds"), and describes the change, not the file.
+- Keep the subject line under ~72 characters. Longer explanation goes in the body after a blank line — that's the place for *why*, and for the Build Order step the commit belongs to.
+
+Allowed types:
+
+| Type | Use for |
+|---|---|
+| `/feat` | New gameplay system, mechanic, weapon, enemy, level, or UI screen |
+| `/fix` | Bug fix — wrong behaviour, broken references, crashes |
+| `/refactor` | Restructuring with no behaviour change |
+| `/art` | Sprites, animations, 3D background assets, VFX, audio |
+| `/tune` | Balance/feel-only changes: ScriptableObject values, timings, curves |
+| `/docs` | This spec, README, code comments |
+| `/chore` | Project settings, packages, .gitignore, meta housekeeping |
+
+Notes:
+- `/tune` exists separately from `/feat` on purpose — this project lives or dies on combat feel, and being able to `git log --grep '^/tune'` to find every balance change is worth the extra type.
+- Unity scene/prefab/`.meta` churn rides along with the commit that caused it; it doesn't get its own `/chore`.
+- Commits made before this convention was adopted are left as-is — do not rewrite history to match.
+
 ---
 
 ## 7. Build Order (maps to semester timeline)
