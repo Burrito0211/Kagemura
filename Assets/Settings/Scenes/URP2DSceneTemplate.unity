@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 444367695}
   - component: {fileID: 444367694}
   - component: {fileID: 444367693}
+  - component: {fileID: 444367698}
   m_Layer: 8
   m_Name: Dummy enemy
   m_TagString: Untagged
@@ -154,6 +155,7 @@ MonoBehaviour:
   maxHealth: 100
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.08
+  hitInvulnerability: 0
   destroyOnDeath: 1
 --- !u!61 &444367694
 BoxCollider2D:
@@ -302,6 +304,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &444367698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444367692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 652ec470df3089146ac842f15922a6b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Enemies.EnemyRusher
+  data: {fileID: 11400000, guid: b1c6e3b661a19334ca70ad20860178fe, type: 2}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  target: {fileID: 1190992101}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,6 +575,8 @@ GameObject:
   - component: {fileID: 1190992097}
   - component: {fileID: 1190992103}
   - component: {fileID: 1190992102}
+  - component: {fileID: 1190992105}
+  - component: {fileID: 1190992104}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -756,6 +777,44 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 256
+--- !u!114 &1190992104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 204b6ab8d093d0c489c2057ddef26727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.DodgeController
+  dodgeSpeed: 18
+  dodgeDuration: 0.25
+  cooldown: 0.45
+  exitSpeedRetained: 0.35
+  iFrameStartDelay: 0.04
+  iFrameDuration: 0.16
+  allowAirDodge: 1
+  zeroGravityDuringDodge: 1
+  iFrameTint: {r: 0.6, g: 0.85, b: 1, a: 0.6}
+--- !u!114 &1190992105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f96ed0f79e92a468f8785a0b27b7bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Systems.Health
+  maxHealth: 100
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.08
+  hitInvulnerability: 0.4
+  destroyOnDeath: 0
 --- !u!1 &1269295197
 GameObject:
   m_ObjectHideFlags: 0
