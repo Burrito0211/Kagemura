@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +17,11 @@ namespace Kagamura.Player
         private PlayerController _player;
         private DodgeController _dodge;
         private InputAction _attackAction;
+
+        /// <summary>Raised on equip so the HUD can show the weapon without polling for it.</summary>
+        public event Action<WeaponBase> OnWeaponChanged;
+
+        public WeaponBase CurrentWeapon => currentWeapon;
 
         private void Awake()
         {
@@ -49,6 +55,10 @@ namespace Kagamura.Player
         }
 
         /// <summary>Swap the active weapon (used when Sickle/Bow are added).</summary>
-        public void EquipWeapon(WeaponBase weapon) => currentWeapon = weapon;
+        public void EquipWeapon(WeaponBase weapon)
+        {
+            currentWeapon = weapon;
+            OnWeaponChanged?.Invoke(weapon);
+        }
     }
 }
