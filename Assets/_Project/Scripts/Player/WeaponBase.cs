@@ -57,11 +57,18 @@ namespace Kagamura.Player
                         Source = gameObject
                     };
                     target.TakeDamage(info);
+                    OnHitTarget(col, info);
                     count++;
                 }
             }
             return count;
         }
+
+        /// <summary>
+        /// Per-weapon on-hit effect (spec §2.2) — bleed, lifesteal, and so on. Runs once per
+        /// victim, after the damage lands. The base weapon has none.
+        /// </summary>
+        protected virtual void OnHitTarget(Collider2D victim, in DamageInfo info) { }
 
         protected Vector2 HitboxCenter(int facing) =>
             (Vector2)transform.position + new Vector2(data.hitboxOffset.x * facing, data.hitboxOffset.y);

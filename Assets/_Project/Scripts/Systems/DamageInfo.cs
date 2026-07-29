@@ -14,5 +14,12 @@ namespace Kagamura.Systems
         public Vector2 KnockbackDir;
         public float KnockbackForce;
         public GameObject Source;
+
+        /// <summary>
+        /// True for damage-over-time ticks (sickle bleed). Enemies skip their stagger for these:
+        /// a bleed that re-staggered every half second would lock the rusher out of attacking
+        /// entirely, which would make the sickle a stun-lock rather than a damage choice.
+        /// </summary>
+        public bool IgnoresStagger;
     }
 }

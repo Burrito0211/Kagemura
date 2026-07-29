@@ -33,6 +33,20 @@ namespace Kagamura.Player.Weapons
         [Tooltip("Damage multiplier applied to the final combo hit.")]
         public float finisherDamageMultiplier = 1.5f;
 
+        [Header("Bleed (Sickle)")]
+        [Tooltip("Whether hits stack bleed on the target. Off for Sword and Bow.")]
+        public bool appliesBleed = false;
+        [Tooltip("Damage per tick, per stack. Kept low — the sickle's payoff is in stacking, " +
+                 "not in any single tick.")]
+        public int bleedDamagePerStack = 2;
+        [Tooltip("Seconds between bleed ticks.")]
+        public float bleedTickInterval = 0.5f;
+        [Tooltip("Seconds a bleed lasts. Every new stack refreshes the whole duration.")]
+        public float bleedDuration = 3f;
+        [Tooltip("Stack ceiling. This is the sickle's damage cap — raise it and aggressive " +
+                 "play pays off harder.")]
+        public int bleedMaxStacks = 5;
+
         [Header("Juice (used later)")]
         [Tooltip("Hit-stop duration on a successful hit. Wired up during the polish pass.")]
         public float hitStopDuration = 0.05f;

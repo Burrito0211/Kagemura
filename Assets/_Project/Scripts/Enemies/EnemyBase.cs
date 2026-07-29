@@ -73,7 +73,7 @@ namespace Kagamura.Enemies
         /// <summary>Getting hit interrupts whatever the enemy was doing, so trades feel fair.</summary>
         protected virtual void HandleDamaged(DamageInfo info)
         {
-            if (data == null) return;
+            if (data == null || info.IgnoresStagger) return;
             _staggerUntil = Time.time + data.hitStagger;
         }
 
