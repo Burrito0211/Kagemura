@@ -573,7 +573,6 @@ GameObject:
   - component: {fileID: 1190992099}
   - component: {fileID: 1190992098}
   - component: {fileID: 1190992097}
-  - component: {fileID: 1190992103}
   - component: {fileID: 1190992102}
   - component: {fileID: 1190992105}
   - component: {fileID: 1190992104}
@@ -760,23 +759,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c45aa0fe9cc944aa7b723d3feda8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.PlayerCombat
-  currentWeapon: {fileID: 1190992103}
---- !u!114 &1190992103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1190992096}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35c4c9a1f3b41b54abe18227a0bbf341, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Weapons.SwordWeapon
-  data: {fileID: 11400000, guid: 775e6c4b91f14f34cab8ec6c0bb34a03, type: 2}
-  targetLayers:
-    serializedVersion: 2
-    m_Bits: 256
+  currentWeapon: {fileID: 0}
 --- !u!114 &1190992104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -953,6 +936,65 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1878394857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1878394859}
+  - component: {fileID: 1878394858}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1878394858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878394857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3e8a17f40b62d349a5f1e08b7c46d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.UI.HUDController
+  playerHealth: {fileID: 0}
+  playerCombat: {fileID: 0}
+  healthFill: {fileID: 0}
+  healthTrail: {fileID: 0}
+  healthLabel: {fileID: 0}
+  weaponLabel: {fileID: 0}
+  trailDelay: 0.25
+  trailSpeed: 0.7
+  lowHealthThreshold: 0.3
+  avoidFlashDuration: 0.12
+  healthColor: {r: 0.85, g: 0.19, b: 0.16, a: 1}
+  lowHealthColor: {r: 1, g: 0.45, b: 0.1, a: 1}
+  trailColor: {r: 0.95, g: 0.9, b: 0.78, a: 0.7}
+  avoidFlashColor: {r: 0.6, g: 0.85, b: 1, a: 1}
+  backingColor: {r: 0.05, g: 0.06, b: 0.12, a: 0.85}
+--- !u!4 &1878394859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878394857}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.65055, y: -0.03526, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -962,3 +1004,4 @@ SceneRoots:
   - {fileID: 1269295200}
   - {fileID: 1190992101}
   - {fileID: 444367697}
+  - {fileID: 1878394859}

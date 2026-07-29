@@ -20,6 +20,16 @@ namespace Kagamura.UI
     /// </summary>
     public class HUDController : MonoBehaviour
     {
+        public enum ScreenCorner { TopLeft, TopRight, BottomLeft, BottomRight }
+
+        [Header("Placement (greybox HUD only)")]
+        [Tooltip("Which corner the HUD sits in.")]
+        [SerializeField] private ScreenCorner corner = ScreenCorner.TopLeft;
+        [Tooltip("Distance in from that corner, in reference pixels (1920x1080).")]
+        [SerializeField] private Vector2 screenOffset = new Vector2(28f, 28f);
+        [Tooltip("Health bar size in reference pixels.")]
+        [SerializeField] private Vector2 barSize = new Vector2(360f, 24f);
+
         [Header("Source")]
         [Tooltip("Player health. Found automatically from the PlayerController if left empty.")]
         [SerializeField] private Health playerHealth;
@@ -162,8 +172,7 @@ namespace Kagamura.UI
         // Placeholder only. At the art pass, author the HUD in the scene, drag the Images
         // into the fields above, and none of this runs.
 
-        private const float Margin = 28f;
-        private static readonly Vector2 BarSize = new Vector2(360f, 24f);
+        private RectTransform _root;
 
         private void BuildGreyboxHud()
         {
@@ -179,21 +188,66 @@ namespace Kagamura.UI
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             scaler.matchWidthOrHeight = 0.5f;
 
-            // Draw order is sibling order: backing, then the trail, then the fill on top.
-            CreateBar(canvasGo.transform, "Health Backing", backingColor, false, Vector2.zero);
-            healthTrail = CreateBar(canvasGo.transform, "Health Trail", trailColor, true, Vector2.zero);
-            healthFill = CreateBar(canvasGo.transform, "Health Fill", healthColor, true, Vector2.zero);
+            // Everything hangs off one root, so moving the HUD is a single transform change.
+            var rootGo = new GameObject("HUD Root", typeof(RectTransform));
+            rootGo.transform.SetParent(canvasGo.transform, false);
+            _root = (RectTransform)rootGo.transform;
 
-            healthLabel = CreateLabel(canvasGo.transform, "Health Label", 14, TextAnchor.MiddleRight,
-                new Vector2(0f, 0f), new Vector2(BarSize.x - 8f, BarSize.y));
-            weaponLabel = CreateLabel(canvasGo.transform, "Weapon Label", 16, TextAnchor.MiddleLeft,
-                new Vector2(0f, -(BarSize.y + 6f)), new Vector2(BarSize.x, 22f));
+            // Draw order is sibling order: backing, then the trail, then the fill on top.
+            CreateBar(_root, "Health Backing", backingColor, false, Vector2.zero);
+            healthTrail = CreateBar(_root, "Health Trail", trailColor, true, Vector2.zero);
+            healthFill = CreateBar(_root, "Health Fill", healthColor, true, Vector2.zero);
+
+            healthLabel = CreateLabel(_root, "Health Label", 14, TextAnchor.MiddleRight,
+                new Vector2(-8f, 0f), new Vector2(barSize.x, barSize.y));
+            weaponLabel = CreateLabel(_root, "Weapon Label", 16, TextAnchor.MiddleLeft,
+                new Vector2(0f, -(barSize.y + 6f)), new Vector2(barSize.x, 22f));
+
+            ApplyLayout();
         }
+
+        /// <summary>
+        /// Park the HUD in its chosen corner. Split out from the build so it can be re-run
+        /// whenever the inspector values change — including while the game is playing, which
+        /// is the point: find a spot where the player bar and the enemy bars are both readable
+        /// without pausing.
+        /// </summary>
+        public void ApplyLayout()
+        {
+            if (_root == null) return;
+
+            // Anchor and pivot both sit in the chosen corner, so the offset always reads as
+            // "distance in from that corner" whichever one is picked.
+            Vector2 anchor = corner switch
+            {
+                ScreenCorner.TopRight => new Vector2(1f, 1f),
+                ScreenCorner.BottomLeft => new Vector2(0f, 0f),
+                ScreenCorner.BottomRight => new Vector2(1f, 0f),
+                _ => new Vector2(0f, 1f)
+            };
+
+            _root.anchorMin = _root.anchorMax = _root.pivot = anchor;
+            _root.sizeDelta = new Vector2(barSize.x, barSize.y + 28f);
+            _root.anchoredPosition = new Vector2(
+                anchor.x > 0.5f ? -screenOffset.x : screenOffset.x,
+                anchor.y > 0.5f ? -screenOffset.y : screenOffset.y);
+
+            foreach (var bar in _root.GetComponentsInChildren<Image>(true))
+                ((RectTransform)bar.transform).sizeDelta = barSize;
+        }
+
+#if UNITY_EDITOR
+        // Drag the values in the inspector during play and the HUD moves with them.
+        private void OnValidate()
+        {
+            if (Application.isPlaying) ApplyLayout();
+        }
+#endif
 
         private Image CreateBar(Transform parent, string barName, Color color, bool filled, Vector2 offset)
         {
             var go = new GameObject(barName, typeof(Image));
-            SetUpRect(go, parent, offset, BarSize);
+            SetUpRect(go, parent, offset, barSize);
 
             var img = go.GetComponent<Image>();
             img.color = color;
@@ -229,7 +283,10 @@ namespace Kagamura.UI
             return text;
         }
 
-        /// <summary>Anchor to the top-left corner so the HUD holds position at any resolution.</summary>
+        /// <summary>
+        /// Lay a child out from the top-left of the HUD root. The root owns screen placement,
+        /// so these offsets stay the same whichever corner the HUD is parked in.
+        /// </summary>
         private static RectTransform SetUpRect(GameObject go, Transform parent, Vector2 offset, Vector2 size)
         {
             go.transform.SetParent(parent, false);
@@ -238,7 +295,7 @@ namespace Kagamura.UI
             rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);
             rt.sizeDelta = size;
-            rt.anchoredPosition = new Vector2(Margin + offset.x, -Margin + offset.y);
+            rt.anchoredPosition = offset;
             return rt;
         }
     }
