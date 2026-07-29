@@ -186,13 +186,13 @@ Assets/
 **Every commit message must use this form — no exceptions:**
 
 ```
-/<type> <short imperative description>
+<type>/ <short imperative description>
 ```
 
-Example: `/feat add dodge function with i-frames`
+Example: `feat/ add dodge function with i-frames`
 
 Rules:
-- Leading slash, then the type, then a **space** — no colon.
+- Type first, then a trailing slash, then a **space** — no colon.
 - Description is lowercase, imperative mood ("add", not "added"/"adds"), and describes the change, not the file.
 - Keep the subject line under ~72 characters. Longer explanation goes in the body after a blank line — that's the place for *why*, and for the Build Order step the commit belongs to.
 
@@ -200,18 +200,18 @@ Allowed types:
 
 | Type | Use for |
 |---|---|
-| `/feat` | New gameplay system, mechanic, weapon, enemy, level, or UI screen |
-| `/fix` | Bug fix — wrong behaviour, broken references, crashes |
-| `/refactor` | Restructuring with no behaviour change |
-| `/art` | Sprites, animations, 3D background assets, VFX, audio |
-| `/tune` | Balance/feel-only changes: ScriptableObject values, timings, curves |
-| `/docs` | This spec, README, code comments |
-| `/chore` | Project settings, packages, .gitignore, meta housekeeping |
+| `feat/` | New gameplay system, mechanic, weapon, enemy, level, or UI screen |
+| `fix/` | Bug fix — wrong behaviour, broken references, crashes |
+| `refactor/` | Restructuring with no behaviour change |
+| `art/` | Sprites, animations, 3D background assets, VFX, audio |
+| `tune/` | Balance/feel-only changes: ScriptableObject values, timings, curves |
+| `docs/` | This spec, README, code comments |
+| `chore/` | Project settings, packages, .gitignore, meta housekeeping |
 
 Notes:
-- `/tune` exists separately from `/feat` on purpose — this project lives or dies on combat feel, and being able to `git log --grep '^/tune'` to find every balance change is worth the extra type.
-- Unity scene/prefab/`.meta` churn rides along with the commit that caused it; it doesn't get its own `/chore`.
-- Commits made before this convention was adopted are left as-is — do not rewrite history to match.
+- `tune/` exists separately from `feat/` on purpose — this project lives or dies on combat feel, and being able to `git log --grep '^tune/'` to find every balance change is worth the extra type.
+- Unity scene/prefab/`.meta` churn rides along with the commit that caused it; it doesn't get its own `chore/`.
+- Commits made before this convention was adopted are left as-is — do not rewrite history to match. The convention was previously written `/feat …` with a leading slash; commits in that form stay as they are, so a full history search needs both patterns: `git log --grep '^/\?tune'`.
 
 ---
 
