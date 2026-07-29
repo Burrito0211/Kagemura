@@ -66,6 +66,17 @@ namespace Kagamura.Systems
         private void Start() => OnHealthChanged?.Invoke(_current, maxHealth);
 
         /// <summary>
+        /// Override the inspector value from a stats asset (EnemyData/WeaponData-style tuning).
+        /// Call before Start so the first OnHealthChanged reports the real maximum.
+        /// </summary>
+        public void SetMaxHealth(int newMax, bool refill = true)
+        {
+            maxHealth = Mathf.Max(1, newMax);
+            _current = refill ? maxHealth : Mathf.Min(_current, maxHealth);
+            OnHealthChanged?.Invoke(_current, maxHealth);
+        }
+
+        /// <summary>
         /// Hold/release i-frames for as long as an ability lasts (dodge). Calls are counted,
         /// so overlapping sources each release their own hold without ending the others.
         /// </summary>
