@@ -14,11 +14,13 @@ namespace Kagamura.Player
         [SerializeField] private WeaponBase currentWeapon;
 
         private PlayerController _player;
+        private DodgeController _dodge;
         private InputAction _attackAction;
 
         private void Awake()
         {
             _player = GetComponent<PlayerController>();
+            _dodge = GetComponent<DodgeController>();
             if (currentWeapon == null)
                 currentWeapon = GetComponent<WeaponBase>();
         }
@@ -38,6 +40,9 @@ namespace Kagamura.Player
         private void Update()
         {
             if (_attackAction == null || currentWeapon == null) return;
+
+            // A dodge is a commitment — you can't swing out of the middle of a roll.
+            if (_dodge != null && _dodge.IsDodging) return;
 
             if (_attackAction.WasPressedThisFrame())
                 currentWeapon.TryAttack(_player.Facing);

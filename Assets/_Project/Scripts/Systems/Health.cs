@@ -18,6 +18,12 @@ namespace Kagamura.Systems
         [SerializeField] private Color flashColor = Color.red;
         [SerializeField] private float flashDuration = 0.08f;
 
+        [Header("Invulnerability")]
+        [Tooltip("Seconds of invulnerability granted automatically after taking a hit. " +
+                 "Use a small value on the player (~0.4s) to stop contact damage draining " +
+                 "health every frame; leave at 0 for enemies.")]
+        [SerializeField] private float hitInvulnerability = 0f;
+
         [Header("Death")]
         [Tooltip("Destroy this GameObject when health reaches 0 (fine for dummy enemies).")]
         [SerializeField] private bool destroyOnDeath = true;
@@ -28,14 +34,26 @@ namespace Kagamura.Systems
         private Rigidbody2D _rb;
         private Coroutine _flashRoutine;
 
+        // Timed i-frames (post-hit) and held i-frames (dodge) are tracked separately so a
+        // dodge ending never cancels post-hit invulnerability, and vice versa.
+        private float _invulnerableUntil = -999f;
+        private int _invulnerabilityHolds;
+
         // --- Events (current, max) / (damage info) / (death) ---
         public event Action<int, int> OnHealthChanged;
         public event Action<DamageInfo> OnDamaged;
         public event Action OnDied;
 
+        /// <summary>Raised when a hit was ignored because the target was invulnerable —
+        /// the hook for a "perfect dodge" spark/sfx during the polish pass.</summary>
+        public event Action<DamageInfo> OnDamageAvoided;
+
         public int Current => _current;
         public int Max => maxHealth;
         public bool IsAlive => _current > 0;
+
+        /// <summary>True while i-frames are active from either a dodge or a recent hit.</summary>
+        public bool IsInvulnerable => _invulnerabilityHolds > 0 || Time.time < _invulnerableUntil;
 
         private void Awake()
         {
@@ -47,9 +65,32 @@ namespace Kagamura.Systems
 
         private void Start() => OnHealthChanged?.Invoke(_current, maxHealth);
 
+        /// <summary>
+        /// Hold/release i-frames for as long as an ability lasts (dodge). Calls are counted,
+        /// so overlapping sources each release their own hold without ending the others.
+        /// </summary>
+        public void SetInvulnerable(bool active)
+        {
+            _invulnerabilityHolds = Mathf.Max(0, _invulnerabilityHolds + (active ? 1 : -1));
+        }
+
+        /// <summary>Grant i-frames for a fixed duration (never shortens an existing window).</summary>
+        public void GrantInvulnerability(float duration)
+        {
+            _invulnerableUntil = Mathf.Max(_invulnerableUntil, Time.time + duration);
+        }
+
         public void TakeDamage(in DamageInfo info)
         {
             if (!IsAlive) return;
+
+            if (IsInvulnerable)
+            {
+                OnDamageAvoided?.Invoke(info);
+                return;
+            }
+
+            if (hitInvulnerability > 0f) GrantInvulnerability(hitInvulnerability);
 
             _current = Mathf.Max(0, _current - info.Amount);
             OnHealthChanged?.Invoke(_current, maxHealth);

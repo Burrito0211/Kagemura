@@ -54,12 +54,25 @@ namespace Kagamura.Player
         private float _coyoteCounter;
         private float _jumpBufferCounter;
         private int _facing = 1;
+        private bool _controlLocked;
 
         /// <summary>Current horizontal facing: +1 = right, -1 = left. Read by weapons/combat.</summary>
         public int Facing => _facing;
 
         /// <summary>True while standing on ground (read by combat/other systems).</summary>
         public bool IsGrounded => _isGrounded;
+
+        /// <summary>Raw horizontal input this frame, -1..1. Read by the dodge to pick a direction.</summary>
+        public float MoveInput => _moveInput;
+
+        /// <summary>True while another ability (dodge) owns the Rigidbody.</summary>
+        public bool IsControlLocked => _controlLocked;
+
+        /// <summary>
+        /// Hand velocity control to an ability (dodge) and back. While locked this controller
+        /// applies no movement, jump, or gravity so the two never fight over linearVelocity.
+        /// </summary>
+        public void SetControlLocked(bool locked) => _controlLocked = locked;
 
         private void Awake()
         {
@@ -101,8 +114,8 @@ namespace Kagamura.Player
             _jumpBufferCounter -= Time.deltaTime;
             _coyoteCounter = _isGrounded ? coyoteTime : _coyoteCounter - Time.deltaTime;
 
-            // --- Sprite facing ---
-            if (Mathf.Abs(_moveInput) > 0.01f)
+            // --- Sprite facing --- (frozen mid-dodge so the dodge can't be steered)
+            if (!_controlLocked && Mathf.Abs(_moveInput) > 0.01f)
             {
                 int dir = _moveInput > 0f ? 1 : -1;
                 if (dir != _facing)
@@ -118,6 +131,10 @@ namespace Kagamura.Player
         private void FixedUpdate()
         {
             GroundCheck();
+
+            // A dodge owns the Rigidbody for its duration; don't fight it.
+            if (_controlLocked) return;
+
             ApplyHorizontalMovement();
             HandleJump();
             ApplyBetterGravity();
