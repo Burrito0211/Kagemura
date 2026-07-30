@@ -106,6 +106,21 @@ namespace Kagamura.Enemies
             if (_stateTimer <= 0f) Enter(State.Chase);
         }
 
+        /// <summary>
+        /// Parried: drop the swing wherever it is, live hitbox included, and take the full
+        /// cooldown rather than the half CancelSwing gives — a read that good should buy the
+        /// player more than a plain interrupt does.
+        /// </summary>
+        public override void InterruptAttack()
+        {
+            if (_state != State.Windup && _state != State.Strike) return;
+
+            ResetTint();
+            _hitLandedThisSwing = true;          // no further connections from this swing
+            _nextAttackTime = Time.time + data.attackCooldown;
+            Enter(State.Recover, data.recoveryTime);
+        }
+
         private void CancelSwing()
         {
             ResetTint();

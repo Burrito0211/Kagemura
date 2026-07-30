@@ -24,6 +24,7 @@ namespace Kagamura.Player.Specials
 
         private PlayerController _player;
         private DodgeController _dodge;
+        private ParryController _parry;
         private InputAction _burstAction;
         private InputAction _mobilityAction;
 
@@ -34,9 +35,28 @@ namespace Kagamura.Player.Specials
         {
             _player = GetComponent<PlayerController>();
             _dodge = GetComponent<DodgeController>();
+            _parry = GetComponent<ParryController>();
 
             if (burst == null) burst = GetComponent<SlamSpecial>();
             if (mobility == null) mobility = GetComponent<DashStrikeSpecial>();
+
+            // Both fields take any SpecialAbility, so dragging the same component into both is
+            // an easy mistake with a baffling symptom: one ability answers both keys, the other
+            // looks like it stopped existing, and whichever slot is polled last wins the aim
+            // state — so the first key's preview never appears. Repair it and say so.
+            if (burst != null && ReferenceEquals(burst, mobility))
+            {
+                var slam = GetComponent<SlamSpecial>();
+                var dash = GetComponent<DashStrikeSpecial>();
+
+                Debug.LogError($"[PlayerSpecials] 'burst' and 'mobility' both point at " +
+                               $"{burst.GetType().Name}. Falling back to the SlamSpecial and " +
+                               "DashStrikeSpecial on this object — fix the two fields in the " +
+                               "inspector, or clear both and let them auto-fill.", this);
+
+                if (slam != null) burst = slam;
+                mobility = dash;
+            }
         }
 
         private void OnEnable()
@@ -57,16 +77,20 @@ namespace Kagamura.Player.Specials
 
         private void Update()
         {
-            // A dodge outranks a special: the roll is already committed, and cancelling into a
-            // slam would make the dodge's punishable tail free. Nor can one special interrupt
+            // A dodge or parry outranks a special: both are already committed, and cancelling
+            // into a slam would make their punishable tails free. Nor can one special interrupt
             // the other — both take over the player's movement.
             bool blocked = (_dodge != null && _dodge.IsDodging)
+                           || (_parry != null && _parry.IsBusy)
                            || (burst != null && burst.IsRunning)
                            || (mobility != null && mobility.IsRunning);
 
             // Each slot is polled independently, so holding one to look doesn't lock out the other.
             UpdateSlot(burst, _burstAction, blocked);
-            UpdateSlot(mobility, _mobilityAction, blocked);
+
+            // Guard against both slots resolving to one ability anyway (a player carrying only
+            // one special, say): a second pass would fight the first over the aim flag.
+            if (!ReferenceEquals(mobility, burst)) UpdateSlot(mobility, _mobilityAction, blocked);
         }
 
         private void UpdateSlot(SpecialAbility ability, InputAction action, bool blocked)

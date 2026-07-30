@@ -16,6 +16,7 @@ namespace Kagamura.Player
 
         private PlayerController _player;
         private DodgeController _dodge;
+        private ParryController _parry;
         private InputAction _attackAction;
         private InputAction _switchAction;
         private WeaponBase[] _weapons;
@@ -29,6 +30,7 @@ namespace Kagamura.Player
         {
             _player = GetComponent<PlayerController>();
             _dodge = GetComponent<DodgeController>();
+            _parry = GetComponent<ParryController>();
 
             // Every WeaponBase on the player is a slot in the cycle, in component order.
             _weapons = GetComponents<WeaponBase>();
@@ -57,9 +59,9 @@ namespace Kagamura.Player
 
             if (_attackAction == null || currentWeapon == null) return;
 
-            // A dodge is a commitment — you can't swing out of the middle of a roll, and a
-            // bow draw is dropped rather than held through it.
-            if (_dodge != null && _dodge.IsDodging)
+            // A dodge or a parry is a commitment — you can't swing out of the middle of either,
+            // and a bow draw is dropped rather than held through it.
+            if ((_dodge != null && _dodge.IsDodging) || (_parry != null && _parry.IsBusy))
             {
                 currentWeapon.CancelAttack();
                 return;

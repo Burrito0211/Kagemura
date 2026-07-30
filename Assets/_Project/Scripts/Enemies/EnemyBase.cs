@@ -74,8 +74,28 @@ namespace Kagamura.Enemies
         protected virtual void HandleDamaged(DamageInfo info)
         {
             if (data == null || info.IgnoresStagger) return;
-            _staggerUntil = Time.time + data.hitStagger;
+            Stagger(data.hitStagger);
         }
+
+        /// <summary>
+        /// Freeze the enemy for a time. Public because a parry has to punish an attack from
+        /// outside the damage path — a parried swing should cost the attacker something even
+        /// though the parry itself deals no damage. Never shortens an existing stagger.
+        /// </summary>
+        public void Stagger(float duration)
+        {
+            _staggerUntil = Mathf.Max(_staggerUntil, Time.time + duration);
+        }
+
+        /// <summary>
+        /// Abandon an attack in progress, including one whose hitbox is already live. Subclasses
+        /// that have attack states override this; the base has no attack of its own.
+        ///
+        /// Separate from <see cref="Stagger"/> because the two answer different questions: a
+        /// normal hit freezes the enemy but shouldn't erase a swing that already connected,
+        /// while a parry has consumed the swing outright and should end it.
+        /// </summary>
+        public virtual void InterruptAttack() { }
 
         /// <summary>Point the sprite at the target. Skipped mid-attack so a committed swing can be dodged past.</summary>
         protected void FaceTarget()

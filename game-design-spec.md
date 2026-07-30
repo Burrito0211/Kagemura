@@ -50,8 +50,13 @@ This hook should inform naming, palette choices, and enemy/boss flavor text thro
 Implementation note: build all three off a shared `WeaponBase` class/interface (attack timing, hitbox activation, damage value, on-hit effect) rather than separate systems per weapon. Differentiate via data (ScriptableObject stats) wherever possible instead of unique code paths.
 
 ### 2.3 Dodge / Parry
-- **Recommended: Dodge with i-frames** (Dead Cells-style) — safer to tune, more forgiving for a first solo project.
-- Optional stretch goal: add a parry window on top of dodge later, once base combat is solid, if time allows. Do not attempt parry-only combat as the initial design — it's high-risk to get feeling good.
+- **Dodge with i-frames** (Dead Cells-style) — safer to tune, more forgiving for a first solo project. Built at step 3 and the base of the combat loop.
+- **Decided: dodge + parry** (was §9's first open question, settled 2026-07-30). The parry was built on top of the dodge, not instead of it, and the two are deliberately different answers to the same moment:
+  - **Dodge** — longer window, moves you clear, no punish for a miss beyond the roll's tail. The safe read, always available.
+  - **Parry** — shorter window, no movement, and a whiff roots the player in place. A success drops the attacker's swing outright (including a live hitbox), staggers it, and pays bonus Focus. The greedy read.
+  - A parry deals **no damage** — the reward is tempo and Focus. Making it also a free hit would leave no reason to do anything else.
+  - Dodge was **not** nerfed to make room. If the parry proves strictly better in playtesting, tighten the parry or lengthen its whiff lockout before touching the dodge — the dodge is what the rest of the game is tuned against.
+- Parry-only combat remains rejected as an initial design: high-risk to get feeling good.
 
 ### 2.4 Special Abilities (2 total)
 1. **Offensive burst** — e.g. AoE slam or heavy strike, resource/cooldown gated.
@@ -247,7 +252,7 @@ Notes:
 ---
 
 ## 9. Open Questions (to resolve during prototyping)
-- Final decision: dodge-only vs. dodge+parry?
+- ~~Final decision: dodge-only vs. dodge+parry?~~ **Resolved 2026-07-30: dodge + parry.** See §2.3.
 - Resource system for bow/specials: shared "Focus" meter, or separate stamina/mana?
 - Story delivery: text boxes, voice-lite (grunts/sfx + text), or full dialogue UI with portraits?
 - Art medium for 2D sprites: pixel art vs. hand-drawn/vector — both can support the ukiyo-e direction, but affect workload differently (pixel art may be faster solo; vector/flat-shaded may match the woodblock look more directly).

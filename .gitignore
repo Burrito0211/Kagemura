@@ -60,3 +60,8 @@ crashlytics-build.properties
 /[Bb]uild.gradle
 /[Ss]ettings.gradle
 /[Gg]radle.properties
+
+# IDE / tooling noise (not part of the project)
+.vscode/
+*.slnx
+UpgradeLog*.htm

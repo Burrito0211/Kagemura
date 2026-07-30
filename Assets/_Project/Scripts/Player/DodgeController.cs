@@ -51,6 +51,7 @@ namespace Kagamura.Player
         private PlayerController _player;
         private Rigidbody2D _rb;
         private Health _health;
+        private ParryController _parry;
         private SpriteRenderer _sprite;
         private InputAction _dodgeAction;
 
@@ -68,13 +69,18 @@ namespace Kagamura.Player
         public bool CanDodge => !_isDodging
                                 && Time.time >= _cooldownEndTime
                                 && (allowAirDodge || _player.IsGrounded)
-                                && (_health == null || _health.IsAlive);
+                                && (_health == null || _health.IsAlive)
+                                // A whiffed parry has to actually cost something. Without this,
+                                // rolling out of the lockout makes the parry strictly better
+                                // than the dodge and there's no reason to ever dodge again.
+                                && (_parry == null || !_parry.IsBusy);
 
         private void Awake()
         {
             _player = GetComponent<PlayerController>();
             _rb = GetComponent<Rigidbody2D>();
             _health = GetComponent<Health>();
+            _parry = GetComponent<ParryController>();
             _sprite = GetComponentInChildren<SpriteRenderer>();
             if (_sprite != null) _baseColor = _sprite.color;
         }

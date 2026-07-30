@@ -623,6 +623,7 @@ GameObject:
   - component: {fileID: 1190992112}
   - component: {fileID: 1190992111}
   - component: {fileID: 1190992110}
+  - component: {fileID: 1190992114}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -953,6 +954,9 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 256
+  showAimPreview: 1
+  previewAlpha: 0.16
+  previewBlockedTint: {r: 0.6, g: 0.6, b: 0.65, a: 1}
 --- !u!114 &1190992111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -969,6 +973,9 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 256
+  showAimPreview: 1
+  previewAlpha: 0.16
+  previewBlockedTint: {r: 0.6, g: 0.6, b: 0.65, a: 1}
   showRadiusGizmo: 1
 --- !u!114 &1190992112
 MonoBehaviour:
@@ -984,8 +991,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Systems.Focus
   maxCharges: 5
   startingCharges: 0
-  pointsPerCharge: 3
-  focusPerAvoidedHit: 1
+  pointsPerCharge: 100
+  focusPerAvoidedHit: 50
 --- !u!114 &1190992113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,7 +1006,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Specials.PlayerSpecials
   burst: {fileID: 1190992111}
-  mobility: {fileID: 1190992111}
+  mobility: {fileID: 1190992110}
+--- !u!114 &1190992114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e08b34d17ca2f6489d0b1e5a37c942f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.ParryController
+  parryWindow: 0.12
+  failRecovery: 0.35
+  successCooldown: 0.25
+  staggerDuration: 0.9
+  focusBonus: 50
+  parryTint: {r: 1, g: 0.98, b: 0.85, a: 1}
+  failTint: {r: 0.45, g: 0.45, b: 0.5, a: 1}
 --- !u!1 &1269295197
 GameObject:
   m_ObjectHideFlags: 0
