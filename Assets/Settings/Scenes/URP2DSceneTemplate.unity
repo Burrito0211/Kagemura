@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 444367694}
   - component: {fileID: 444367693}
   - component: {fileID: 444367698}
+  - component: {fileID: 444367699}
   m_Layer: 8
   m_Name: Dummy enemy
   m_TagString: Untagged
@@ -298,8 +299,8 @@ Transform:
   m_GameObject: {fileID: 444367692}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.3, y: -1.68, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 7.4405, y: -1.0778, z: 0}
+  m_LocalScale: {x: 1.281, y: 2.2043, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -321,6 +322,44 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   target: {fileID: 1190992101}
+--- !u!114 &444367699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444367692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3e8a17f40b62d349a5f1e08b7c46d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.UI.HUDController
+  corner: 1
+  screenOffset: {x: 28, y: 28}
+  barSize: {x: 360, y: 24}
+  playerHealth: {fileID: 444367693}
+  playerCombat: {fileID: 0}
+  playerFocus: {fileID: 0}
+  healthFill: {fileID: 0}
+  healthTrail: {fileID: 0}
+  healthLabel: {fileID: 0}
+  weaponLabel: {fileID: 0}
+  weaponLabelPrefix: 'weapon: '
+  focusPipHeight: 16
+  focusPipSpacing: 5
+  trailDelay: 0.25
+  trailSpeed: 0.7
+  lowHealthThreshold: 0.3
+  avoidFlashDuration: 0.12
+  focusDenyFlashDuration: 0.2
+  healthColor: {r: 0.85, g: 0.19, b: 0.16, a: 1}
+  lowHealthColor: {r: 1, g: 0.45, b: 0.1, a: 1}
+  trailColor: {r: 0.95, g: 0.9, b: 0.78, a: 0.7}
+  avoidFlashColor: {r: 0.6, g: 0.85, b: 1, a: 1}
+  backingColor: {r: 0.05, g: 0.06, b: 0.12, a: 0.85}
+  focusColor: {r: 0.35, g: 0.62, b: 0.85, a: 1}
+  focusFullColor: {r: 0.55, g: 0.9, b: 1, a: 1}
+  focusDenyColor: {r: 0.55, g: 0.55, b: 0.6, a: 1}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,8 +568,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0, y: -0.00000011920929, z: 0}
-    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+    m_Center: {x: -0.00024998188, y: -0.000100016594, z: 0}
+    m_Extent: {x: 1.00045, y: 1.0009, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -554,7 +593,7 @@ Transform:
   m_GameObject: {fileID: 619394800}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.63, y: 15.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -576,6 +615,14 @@ GameObject:
   - component: {fileID: 1190992102}
   - component: {fileID: 1190992105}
   - component: {fileID: 1190992104}
+  - component: {fileID: 1190992106}
+  - component: {fileID: 1190992107}
+  - component: {fileID: 1190992109}
+  - component: {fileID: 1190992108}
+  - component: {fileID: 1190992113}
+  - component: {fileID: 1190992112}
+  - component: {fileID: 1190992111}
+  - component: {fileID: 1190992110}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -798,6 +845,161 @@ MonoBehaviour:
   flashDuration: 0.08
   hitInvulnerability: 0.4
   destroyOnDeath: 0
+--- !u!114 &1190992106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b96e4c70da31f34e8b5c1907da26f83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Weapons.SickleWeapon
+  data: {fileID: 11400000, guid: 5a2f7c81d63e4b94b8017fa3e2c95d60, type: 2}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &1190992107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3e8a17f40b62d349a5f1e08b7c46d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.UI.HUDController
+  corner: 0
+  screenOffset: {x: 28, y: 28}
+  barSize: {x: 360, y: 24}
+  playerHealth: {fileID: 1190992105}
+  playerCombat: {fileID: 1190992102}
+  playerFocus: {fileID: 1190992112}
+  healthFill: {fileID: 0}
+  healthTrail: {fileID: 0}
+  healthLabel: {fileID: 0}
+  weaponLabel: {fileID: 0}
+  weaponLabelPrefix: 'weapon: '
+  focusPipHeight: 16
+  focusPipSpacing: 5
+  trailDelay: 0.25
+  trailSpeed: 0.7
+  lowHealthThreshold: 0.3
+  avoidFlashDuration: 0.12
+  focusDenyFlashDuration: 0.2
+  healthColor: {r: 0.85, g: 0.19, b: 0.16, a: 1}
+  lowHealthColor: {r: 1, g: 0.45, b: 0.1, a: 1}
+  trailColor: {r: 0.95, g: 0.9, b: 0.78, a: 0.7}
+  avoidFlashColor: {r: 0.6, g: 0.85, b: 1, a: 1}
+  backingColor: {r: 0.05, g: 0.06, b: 0.12, a: 0.85}
+  focusColor: {r: 0.35, g: 0.62, b: 0.85, a: 1}
+  focusFullColor: {r: 0.04115079, g: 0.016197944, b: 0.49056602, a: 1}
+  focusDenyColor: {r: 0.55, g: 0.55, b: 0.6, a: 1}
+--- !u!114 &1190992108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1a83d5c920b7e4f8a0d34e17b96c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Weapons.BowWeapon
+  data: {fileID: 11400000, guid: 9d4e02b7a53c1f8489e6c7031b5a2ed4, type: 2}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  arrowPrefab: {fileID: 0}
+  greyboxArrowSize: {x: 0.5, y: 0.08}
+  fullDrawTint: {r: 0.75, g: 0.9, b: 1, a: 1}
+--- !u!114 &1190992109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35c4c9a1f3b41b54abe18227a0bbf341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Weapons.SwordWeapon
+  data: {fileID: 11400000, guid: 775e6c4b91f14f34cab8ec6c0bb34a03, type: 2}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &1190992110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d63b8f0e4a729c458017ba36d9f2e08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Specials.DashStrikeSpecial
+  data: {fileID: 11400000, guid: 19acb597a9bbc98429618cc4c2cda356, type: 2}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &1190992111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4f9e02b58a13d4a9026fd8c37e14b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Specials.SlamSpecial
+  data: {fileID: 11400000, guid: 6a1e03f2b70722b41bf394ac84e3ed61, type: 2}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  showRadiusGizmo: 1
+--- !u!114 &1190992112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4e91c0d75b382f4ab6710c9e5d43728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Systems.Focus
+  maxCharges: 5
+  startingCharges: 0
+  pointsPerCharge: 3
+  focusPerAvoidedHit: 1
+--- !u!114 &1190992113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190992096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a25e7c31b0df844b6e1590ca4738f26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Specials.PlayerSpecials
+  burst: {fileID: 1190992111}
+  mobility: {fileID: 1190992111}
 --- !u!1 &1269295197
 GameObject:
   m_ObjectHideFlags: 0
@@ -936,65 +1138,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1878394857
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1878394859}
-  - component: {fileID: 1878394858}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1878394858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1878394857}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3e8a17f40b62d349a5f1e08b7c46d92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.UI.HUDController
-  playerHealth: {fileID: 0}
-  playerCombat: {fileID: 0}
-  healthFill: {fileID: 0}
-  healthTrail: {fileID: 0}
-  healthLabel: {fileID: 0}
-  weaponLabel: {fileID: 0}
-  trailDelay: 0.25
-  trailSpeed: 0.7
-  lowHealthThreshold: 0.3
-  avoidFlashDuration: 0.12
-  healthColor: {r: 0.85, g: 0.19, b: 0.16, a: 1}
-  lowHealthColor: {r: 1, g: 0.45, b: 0.1, a: 1}
-  trailColor: {r: 0.95, g: 0.9, b: 0.78, a: 0.7}
-  avoidFlashColor: {r: 0.6, g: 0.85, b: 1, a: 1}
-  backingColor: {r: 0.05, g: 0.06, b: 0.12, a: 0.85}
---- !u!4 &1878394859
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1878394857}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.65055, y: -0.03526, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1004,4 +1147,3 @@ SceneRoots:
   - {fileID: 1269295200}
   - {fileID: 1190992101}
   - {fileID: 444367697}
-  - {fileID: 1878394859}
