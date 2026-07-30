@@ -166,9 +166,7 @@ namespace Kagamura.Enemies
         {
             Vector3 spawn = Muzzle();
 
-            ArrowProjectile bolt = boltPrefab != null
-                ? Instantiate(boltPrefab, spawn, Quaternion.identity)
-                : BuildGreyboxBolt(spawn);
+            ArrowProjectile bolt = EnemyBolt.Spawn(boltPrefab, spawn, greyboxBoltSize, boltColor);
 
             // Source is this enemy, which is what lets a parried bolt punish the shooter at
             // range — ParryController staggers whatever EnemyBase it finds on the source.
@@ -223,38 +221,6 @@ namespace Kagamura.Enemies
         {
             _state = next;
             _stateTimer = duration;
-        }
-
-        // --- Greybox construction -------------------------------------------------------
-        // Placeholder only. Assign a bolt prefab and none of this runs.
-        //
-        // The projectile itself is ArrowProjectile, the same script the player's bow fires.
-        // It already does exactly this job — fly straight, damage the first thing on the target
-        // layers, die on terrain — and a near-identical copy under Enemies/ would be two places
-        // to fix the next time projectile behaviour changes. It credits Focus only to a source
-        // that has a Focus pool, so an enemy firing one is inert on that path.
-
-        private ArrowProjectile BuildGreyboxBolt(Vector3 position)
-        {
-            var go = new GameObject("Yokai Bolt (greybox)");
-            go.transform.position = position;
-            go.transform.localScale = new Vector3(greyboxBoltSize.x, greyboxBoltSize.y, 1f);
-
-            var sprite = go.AddComponent<SpriteRenderer>();
-            sprite.sprite = GreyboxArt.WhiteSprite();
-            sprite.color = boltColor;
-            sprite.sortingOrder = 10;
-
-            var rb = go.AddComponent<Rigidbody2D>();
-            rb.gravityScale = 0f;               // flat flight, so the dodge window is constant
-            rb.freezeRotation = true;
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-
-            var col = go.AddComponent<BoxCollider2D>();
-            col.size = Vector2.one;             // scaled to size by the transform above
-            col.isTrigger = true;
-
-            return go.AddComponent<ArrowProjectile>();
         }
 
         protected override void OnDrawGizmosSelected()

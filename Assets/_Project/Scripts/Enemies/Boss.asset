@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d92f4a17c8e0b3f4b8156c2eda7093f1, type: 3}
+  m_Name: Boss
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Enemies.BossData
+  displayName: Onikage
+  maxHealth: 400
+  hitStagger: 0.08
+  moveSpeed: 3.2
+  chaseRange: 20
+  stopDistance: 1.6
+  attackRange: 2.4
+  damage: 18
+  knockbackForce: 10
+  windupTime: 0.6
+  activeTime: 0.14
+  recoveryTime: 0.5
+  attackCooldown: 1.6
+  hitboxSize: {x: 2.6, y: 2}
+  hitboxOffset: {x: 1.5, y: 0}
+  retreatDistance: 4
+  projectileSpeed: 10
+  projectileLifetime: 3.5
+  guardBreakDamage: 20
+  guardBrokenDuration: 2.5
+  guardBlockColor: {r: 0.65, g: 0.7, b: 0.8, a: 1}
+  guardBrokenColor: {r: 1, g: 0.9, b: 0.35, a: 1}
+  windupColor: {r: 1, g: 0.55, b: 0.2, a: 1}
+  phase2HealthFraction: 0.5
+  phaseTransitionTime: 1.4
+  phase2Color: {r: 0.85, g: 0.2, b: 0.3, a: 1}
+  phase2WindupScale: 0.75
+  phase2CooldownScale: 0.65
+  phase2SpeedScale: 1.3
+  phase1Bolts: 1
+  phase2Bolts: 3
+  volleySpreadDegrees: 34
+  rangedThreshold: 5
