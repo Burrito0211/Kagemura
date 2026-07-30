@@ -20,6 +20,27 @@ namespace Kagamura.Player
         protected float _lastAttackTime = -999f;
         protected int _lastFacing = 1;
 
+        private Focus _focus;
+        private bool _focusResolved;
+
+        /// <summary>
+        /// The player's Focus pool, if they have one. Resolved lazily rather than in Awake:
+        /// WeaponBase has no Awake of its own, and subclasses that add one shouldn't have to
+        /// remember to call base.
+        /// </summary>
+        protected Focus PlayerFocus
+        {
+            get
+            {
+                if (!_focusResolved)
+                {
+                    _focus = GetComponent<Focus>();
+                    _focusResolved = true;
+                }
+                return _focus;
+            }
+        }
+
         public WeaponData Data => data;
         public bool CanAttack => data != null && Time.time >= _lastAttackTime + data.attackCooldown;
 
@@ -33,6 +54,18 @@ namespace Kagamura.Player
         }
 
         protected abstract void DoAttack(int facing);
+
+        /// <summary>
+        /// Attack input released. Weapons that resolve on press (sword, sickle) ignore it;
+        /// the bow fires here, because its shot is defined by how long the button was held.
+        /// </summary>
+        public virtual void ReleaseAttack(int facing) { }
+
+        /// <summary>
+        /// Drop any attack in progress — called when a dodge interrupts. A half-drawn bow
+        /// loses the shot rather than firing it, so rolling out of a draw has a real cost.
+        /// </summary>
+        public virtual void CancelAttack() { }
 
         /// <summary>
         /// Overlap the weapon hitbox in front of the player and damage everything alive on the
@@ -58,6 +91,9 @@ namespace Kagamura.Player
                     };
                     target.TakeDamage(info);
                     OnHitTarget(col, info);
+                    // Per victim, not per swing: a swing that catches two enemies is worth more
+                    // Focus, which is what makes positioning pay off.
+                    PlayerFocus?.Gain(data.focusPerHit);
                     count++;
                 }
             }

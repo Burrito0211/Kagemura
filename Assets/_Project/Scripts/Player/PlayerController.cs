@@ -55,6 +55,7 @@ namespace Kagamura.Player
         private float _jumpBufferCounter;
         private int _facing = 1;
         private bool _controlLocked;
+        private float _moveSpeedMultiplier = 1f;
 
         /// <summary>Current horizontal facing: +1 = right, -1 = left. Read by weapons/combat.</summary>
         public int Facing => _facing;
@@ -73,6 +74,14 @@ namespace Kagamura.Player
         /// applies no movement, jump, or gravity so the two never fight over linearVelocity.
         /// </summary>
         public void SetControlLocked(bool locked) => _controlLocked = locked;
+
+        /// <summary>
+        /// Scale top speed for as long as an action wants it (bow draw). 1 = normal.
+        /// A multiplier rather than a hard lock, so a drawn bow still lets the player
+        /// reposition — slowly — instead of rooting them in place.
+        /// </summary>
+        public void SetMoveSpeedMultiplier(float multiplier) =>
+            _moveSpeedMultiplier = Mathf.Clamp(multiplier, 0f, 1f);
 
         private void Awake()
         {
@@ -152,7 +161,7 @@ namespace Kagamura.Player
 
         private void ApplyHorizontalMovement()
         {
-            float targetSpeed = _moveInput * moveSpeed;
+            float targetSpeed = _moveInput * moveSpeed * _moveSpeedMultiplier;
             float rate = Mathf.Abs(targetSpeed) > 0.01f ? acceleration : deceleration;
             float newX = Mathf.MoveTowards(_rb.linearVelocity.x, targetSpeed, rate * Time.fixedDeltaTime);
             _rb.linearVelocity = new Vector2(newX, _rb.linearVelocity.y);

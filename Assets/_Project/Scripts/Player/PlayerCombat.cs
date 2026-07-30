@@ -57,17 +57,27 @@ namespace Kagamura.Player
 
             if (_attackAction == null || currentWeapon == null) return;
 
-            // A dodge is a commitment — you can't swing out of the middle of a roll.
-            if (_dodge != null && _dodge.IsDodging) return;
+            // A dodge is a commitment — you can't swing out of the middle of a roll, and a
+            // bow draw is dropped rather than held through it.
+            if (_dodge != null && _dodge.IsDodging)
+            {
+                currentWeapon.CancelAttack();
+                return;
+            }
 
             if (_attackAction.WasPressedThisFrame())
                 currentWeapon.TryAttack(_player.Facing);
+            else if (_attackAction.WasReleasedThisFrame())
+                currentWeapon.ReleaseAttack(_player.Facing);
         }
 
         /// <summary>Step to the next weapon on the player, wrapping around.</summary>
         public void CycleWeapon()
         {
             if (_weapons == null || _weapons.Length < 2) return;
+
+            // Don't carry a half-drawn bow over to the next weapon.
+            if (currentWeapon != null) currentWeapon.CancelAttack();
 
             int index = System.Array.IndexOf(_weapons, currentWeapon);
             EquipWeapon(_weapons[(index + 1) % _weapons.Length]);

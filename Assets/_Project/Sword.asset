@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Sword
   damage: 20
   knockbackForce: 6
+  focusPerHit: 34
   attackCooldown: 0.3
   hitboxSize: {x: 1.4, y: 1.2}
   hitboxOffset: {x: 0.9, y: 0}

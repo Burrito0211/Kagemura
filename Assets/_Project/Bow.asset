@@ -10,21 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 327672268749bf14babb97858423b61f, type: 3}
-  m_Name: Sickle
+  m_Name: Bow
   m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Weapons.WeaponData
-  displayName: Sickle
-  damage: 7
-  knockbackForce: 2
-  focusPerHit: 12
-  attackCooldown: 0.13
-  hitboxSize: {x: 0.9, y: 1}
-  hitboxOffset: {x: 0.65, y: 0}
+  displayName: Bow
+  damage: 34
+  knockbackForce: 4
+  focusPerHit: 50
+  attackCooldown: 0.5
+  hitboxSize: {x: 0.5, y: 0.5}
+  hitboxOffset: {x: 0.8, y: 0.1}
   comboMaxHits: 1
   comboResetTime: 0.7
   finisherDamageMultiplier: 1
-  appliesBleed: 1
+  appliesBleed: 0
   bleedDamagePerStack: 2
   bleedTickInterval: 0.5
   bleedDuration: 3
   bleedMaxStacks: 5
-  hitStopDuration: 0.03
+  chargesOnHold: 1
+  fullDrawTime: 0.8
+  minDrawDamageMultiplier: 0.35
+  minProjectileSpeed: 9
+  maxProjectileSpeed: 22
+  projectileLifetime: 2
+  drawMoveSpeedMultiplier: 0.45
+  hitStopDuration: 0.06

@@ -55,6 +55,12 @@ namespace Kagamura.Systems
         /// <summary>True while i-frames are active from either a dodge or a recent hit.</summary>
         public bool IsInvulnerable => _invulnerabilityHolds > 0 || Time.time < _invulnerableUntil;
 
+        /// <summary>
+        /// True only while an ability is holding i-frames open (dodge, dash-strike) — not for
+        /// the automatic post-hit window. Lets Focus tell a real read from a free one.
+        /// </summary>
+        public bool IsInvulnerableFromAbility => _invulnerabilityHolds > 0;
+
         private void Awake()
         {
             _current = maxHealth;
