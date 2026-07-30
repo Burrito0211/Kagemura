@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Kagamura.Player;
 using Kagamura.Systems;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace Kagamura.UI
     ///
     /// The bar is two layers: the fill snaps to the real value, and a trail behind it drains
     /// down a moment later, so a big hit reads as a chunk lost rather than a number changing.
+    ///
+    /// The weapon readout is one line — "weapon: Sword" — updated from PlayerCombat's equip
+    /// event. Deliberately just the equipped name: no key hint, no list of what else is carried.
     ///
     /// Leave the bindings empty and this builds a greybox canvas for itself at runtime —
     /// enough to tune combat against now, and replaced wholesale at the art pass by assigning
@@ -35,12 +39,26 @@ namespace Kagamura.UI
         [SerializeField] private Health playerHealth;
         [Tooltip("Player combat, for the weapon readout. Found automatically if left empty.")]
         [SerializeField] private PlayerCombat playerCombat;
+        [Tooltip("Player Focus pool, for the special meter. Found automatically if left empty.")]
+        [SerializeField] private Focus playerFocus;
 
         [Header("Bindings (leave empty for the greybox HUD)")]
         [SerializeField] private Image healthFill;
         [SerializeField] private Image healthTrail;
         [SerializeField] private Text healthLabel;
+        [Tooltip("Name of the equipped weapon.")]
         [SerializeField] private Text weaponLabel;
+
+        [Header("Weapon Readout")]
+        [Tooltip("Text in front of the weapon name.")]
+        [SerializeField] private string weaponLabelPrefix = "weapon: ";
+
+        [Header("Focus Meter")]
+        [Tooltip("Height of the Focus pips. Taller than the old bar — they're meant to be " +
+                 "countable at a glance, not just present.")]
+        [SerializeField] private float focusPipHeight = 16f;
+        [Tooltip("Gap between pips. The gap is what makes them countable, so don't set it to 0.")]
+        [SerializeField] private float focusPipSpacing = 5f;
 
         [Header("Feel")]
         [Tooltip("Pause before the trail starts draining, so the lost chunk is readable.")]
@@ -51,6 +69,8 @@ namespace Kagamura.UI
         [Range(0f, 1f)][SerializeField] private float lowHealthThreshold = 0.3f;
         [Tooltip("How long the bar flashes when a hit is shrugged off by i-frames.")]
         [SerializeField] private float avoidFlashDuration = 0.12f;
+        [Tooltip("How long the Focus bar flashes when a special was pressed and couldn't be paid for.")]
+        [SerializeField] private float focusDenyFlashDuration = 0.2f;
 
         [Header("Colours")]
         [SerializeField] private Color healthColor = new Color(0.85f, 0.19f, 0.16f);   // vermillion
@@ -58,12 +78,22 @@ namespace Kagamura.UI
         [SerializeField] private Color trailColor = new Color(0.95f, 0.9f, 0.78f, 0.7f); // parchment
         [SerializeField] private Color avoidFlashColor = new Color(0.6f, 0.85f, 1f);
         [SerializeField] private Color backingColor = new Color(0.05f, 0.06f, 0.12f, 0.85f);
+        [Tooltip("Focus below full.")]
+        [SerializeField] private Color focusColor = new Color(0.35f, 0.62f, 0.85f);
+        [Tooltip("Focus at full. A distinct colour is the 'specials are up' read.")]
+        [SerializeField] private Color focusFullColor = new Color(0.55f, 0.9f, 1f);
+        [SerializeField] private Color focusDenyColor = new Color(0.55f, 0.55f, 0.6f);
 
         private float _fill = 1f;
         private float _trail = 1f;
         private float _trailHoldUntil;
         private float _flashUntil;
         private bool _dead;
+
+        private int _charges;
+        private float _partialCharge;
+        private bool _focusFull;
+        private float _focusDenyUntil;
 
         private void Awake()
         {
@@ -76,6 +106,7 @@ namespace Kagamura.UI
                 {
                     playerHealth = player.GetComponent<Health>();
                     if (playerCombat == null) playerCombat = player.GetComponent<PlayerCombat>();
+                    if (playerFocus == null) playerFocus = player.GetComponent<Focus>();
                 }
             }
 
@@ -94,6 +125,11 @@ namespace Kagamura.UI
                 playerHealth.OnDied += HandleDied;
             }
             if (playerCombat != null) playerCombat.OnWeaponChanged += HandleWeaponChanged;
+            if (playerFocus != null)
+            {
+                playerFocus.OnFocusChanged += HandleFocusChanged;
+                playerFocus.OnSpendFailed += HandleFocusDenied;
+            }
         }
 
         private void OnDisable()
@@ -105,6 +141,11 @@ namespace Kagamura.UI
                 playerHealth.OnDied -= HandleDied;
             }
             if (playerCombat != null) playerCombat.OnWeaponChanged -= HandleWeaponChanged;
+            if (playerFocus != null)
+            {
+                playerFocus.OnFocusChanged -= HandleFocusChanged;
+                playerFocus.OnSpendFailed -= HandleFocusDenied;
+            }
         }
 
         private void Start()
@@ -112,13 +153,20 @@ namespace Kagamura.UI
             // Health fires its opening OnHealthChanged from Start, so subscribing in OnEnable
             // usually catches it — but push once here too in case the HUD was enabled late.
             if (playerHealth != null) HandleHealthChanged(playerHealth.Current, playerHealth.Max);
+
+            // Pushed from Start, not Awake: PlayerCombat picks its opening weapon in its own
+            // Awake, and the order between two objects' Awakes isn't defined.
             if (playerCombat != null) HandleWeaponChanged(playerCombat.CurrentWeapon);
+            if (playerFocus != null)
+                HandleFocusChanged(playerFocus.Charges, playerFocus.MaxCharges, playerFocus.PartialCharge);
             _trail = _fill;
             ApplyFill();
         }
 
         private void Update()
         {
+            ApplyPipColors();
+
             if (healthFill == null) return;
 
             if (healthTrail != null && !Mathf.Approximately(_trail, _fill))
@@ -154,12 +202,62 @@ namespace Kagamura.UI
         /// <summary>The i-frame payoff: a dodged hit should still register on screen (spec §2.3).</summary>
         private void HandleDamageAvoided(DamageInfo info) => _flashUntil = Time.time + avoidFlashDuration;
 
+        private void HandleFocusChanged(int charges, int maxCharges, float partial)
+        {
+            _charges = charges;
+            _partialCharge = partial;
+            _focusFull = charges >= maxCharges;
+            ApplyPips();
+        }
+
+        /// <summary>
+        /// Whole charges read as full pips; the one being earned part-fills so progress is still
+        /// visible without turning the meter back into a bar to squint at.
+        /// </summary>
+        private void ApplyPips()
+        {
+            for (int i = 0; i < _pipFills.Count; i++)
+            {
+                if (_pipFills[i] == null) continue;
+                _pipFills[i].fillAmount = i < _charges ? 1f
+                                        : i == _charges ? _partialCharge
+                                        : 0f;
+            }
+        }
+
+        /// <summary>
+        /// Pressed a special without the charges for it. Greying the pips answers "why did
+        /// nothing happen" without a text prompt.
+        /// </summary>
+        private void HandleFocusDenied() => _focusDenyUntil = Time.time + focusDenyFlashDuration;
+
+        private void ApplyPipColors()
+        {
+            if (_pipFills.Count == 0) return;
+
+            Color color = Time.time < _focusDenyUntil ? focusDenyColor
+                        : _focusFull ? focusFullColor
+                        : focusColor;
+
+            foreach (var pip in _pipFills)
+                if (pip != null) pip.color = color;
+        }
+
         private void HandleDied() => _dead = true;
 
         private void HandleWeaponChanged(WeaponBase weapon)
         {
-            if (weaponLabel == null) return;
-            weaponLabel.text = weapon != null && weapon.Data != null ? weapon.Data.displayName : "—";
+            if (weaponLabel != null) weaponLabel.text = weaponLabelPrefix + WeaponName(weapon);
+        }
+
+        private static string WeaponName(WeaponBase weapon)
+        {
+            if (weapon == null) return "—";
+            // Falling back to the component name keeps the strip honest when a WeaponData
+            // asset hasn't been assigned yet, instead of showing three identical blanks.
+            return weapon.Data != null && !string.IsNullOrEmpty(weapon.Data.displayName)
+                ? weapon.Data.displayName
+                : weapon.GetType().Name.Replace("Weapon", string.Empty);
         }
 
         private void ApplyFill()
@@ -173,6 +271,11 @@ namespace Kagamura.UI
         // into the fields above, and none of this runs.
 
         private RectTransform _root;
+        private readonly List<RectTransform> _barRects = new List<RectTransform>();
+
+        // Every pip rect (backings and fills interleaved) for layout; just the fills for state.
+        private readonly List<RectTransform> _pipBackings = new List<RectTransform>();
+        private readonly List<Image> _pipFills = new List<Image>();
 
         private void BuildGreyboxHud()
         {
@@ -200,10 +303,64 @@ namespace Kagamura.UI
 
             healthLabel = CreateLabel(_root, "Health Label", 14, TextAnchor.MiddleRight,
                 new Vector2(-8f, 0f), new Vector2(barSize.x, barSize.y));
+
+            // Focus sits directly under health: both are resources the player watches mid-fight,
+            // so they belong in one glance rather than opposite corners.
+            BuildFocusPips();
+
             weaponLabel = CreateLabel(_root, "Weapon Label", 16, TextAnchor.MiddleLeft,
-                new Vector2(0f, -(barSize.y + 6f)), new Vector2(barSize.x, 22f));
+                Vector2.zero, new Vector2(barSize.x, 22f));
 
             ApplyLayout();
+        }
+
+        /// <summary>
+        /// One pip per charge. Discrete slots rather than a continuous bar because the player has
+        /// to compare what they have against what a special costs, mid-fight — that's counting,
+        /// and a bar can't be counted.
+        /// </summary>
+        private void BuildFocusPips()
+        {
+            int count = playerFocus != null ? playerFocus.MaxCharges : 5;
+
+            for (int i = 0; i < count; i++)
+            {
+                // Backing first so the fill draws over it, same as the health bar's layers.
+                _pipBackings.Add(CreatePip(_root, $"Focus Pip {i} Backing", backingColor, false));
+
+                var fill = CreatePip(_root, $"Focus Pip {i}", focusColor, true);
+                _pipBackings.Add(fill);
+                _pipFills.Add(fill.GetComponent<Image>());
+            }
+        }
+
+        private RectTransform CreatePip(Transform parent, string pipName, Color color, bool filled)
+        {
+            var go = new GameObject(pipName, typeof(Image));
+            var rt = SetUpRect(go, parent, Vector2.zero, new Vector2(10f, focusPipHeight));
+
+            var img = go.GetComponent<Image>();
+            img.color = color;
+            img.raycastTarget = false;
+            if (filled) MakeFillable(img, 0f);   // Focus starts empty; it has to be earned.
+
+            return rt;
+        }
+
+        /// <summary>
+        /// Turn an Image into a horizontal fill bar.
+        ///
+        /// The sprite is not optional: Image.OnPopulateMesh returns a plain quad when there's no
+        /// sprite, which means fillAmount is silently ignored and every bar renders permanently
+        /// full. Assigning one is the whole fix.
+        /// </summary>
+        private static void MakeFillable(Image img, float startAmount)
+        {
+            img.sprite = GreyboxArt.WhiteSprite();
+            img.type = Image.Type.Filled;
+            img.fillMethod = Image.FillMethod.Horizontal;
+            img.fillOrigin = (int)Image.OriginHorizontal.Left;
+            img.fillAmount = startAmount;
         }
 
         /// <summary>
@@ -226,14 +383,43 @@ namespace Kagamura.UI
                 _ => new Vector2(0f, 1f)
             };
 
+            // Stacked top to bottom: health, then Focus, then the weapon line. Each row's Y is
+            // derived from the one above, so changing barSize or focusPipHeight can't overlap them.
+            float focusY = -(barSize.y + 6f);
+            float weaponY = focusY - (focusPipHeight + 6f);
+
             _root.anchorMin = _root.anchorMax = _root.pivot = anchor;
-            _root.sizeDelta = new Vector2(barSize.x, barSize.y + 28f);
+            _root.sizeDelta = new Vector2(barSize.x, -weaponY + 22f);
             _root.anchoredPosition = new Vector2(
                 anchor.x > 0.5f ? -screenOffset.x : screenOffset.x,
                 anchor.y > 0.5f ? -screenOffset.y : screenOffset.y);
 
-            foreach (var bar in _root.GetComponentsInChildren<Image>(true))
-                ((RectTransform)bar.transform).sizeDelta = barSize;
+            // Health and Focus are sized separately — the Focus bar is deliberately thinner, so
+            // one loop over every child Image would flatten that distinction.
+            foreach (var bar in _barRects)
+                if (bar != null) bar.sizeDelta = barSize;
+
+            // Pip width is derived, not authored: the row always spans the health bar exactly, so
+            // the two meters stay aligned however barSize or the charge count changes.
+            int pipCount = _pipFills.Count;
+            if (pipCount > 0)
+            {
+                float pipWidth = (barSize.x - focusPipSpacing * (pipCount - 1)) / pipCount;
+
+                for (int i = 0; i < _pipBackings.Count; i++)
+                {
+                    var pip = _pipBackings[i];
+                    if (pip == null) continue;
+
+                    // Backings and fills alternate, so both layers of pip n share index n.
+                    int slot = i / 2;
+                    pip.sizeDelta = new Vector2(pipWidth, focusPipHeight);
+                    pip.anchoredPosition = new Vector2(slot * (pipWidth + focusPipSpacing), focusY);
+                }
+            }
+
+            if (weaponLabel != null)
+                ((RectTransform)weaponLabel.transform).anchoredPosition = new Vector2(0f, weaponY);
         }
 
 #if UNITY_EDITOR
@@ -247,18 +433,12 @@ namespace Kagamura.UI
         private Image CreateBar(Transform parent, string barName, Color color, bool filled, Vector2 offset)
         {
             var go = new GameObject(barName, typeof(Image));
-            SetUpRect(go, parent, offset, barSize);
+            _barRects.Add(SetUpRect(go, parent, offset, barSize));
 
             var img = go.GetComponent<Image>();
             img.color = color;
             img.raycastTarget = false;
-            if (filled)
-            {
-                img.type = Image.Type.Filled;
-                img.fillMethod = Image.FillMethod.Horizontal;
-                img.fillOrigin = (int)Image.OriginHorizontal.Left;
-                img.fillAmount = 1f;
-            }
+            if (filled) MakeFillable(img, 1f);
 
             return img;
         }

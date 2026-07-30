@@ -135,6 +135,9 @@ namespace Kagamura.UI
             img.raycastTarget = false;
             if (filled)
             {
+                // The sprite is required, not decoration: a sprite-less Image renders as a plain
+                // quad and ignores fillAmount, so the bar would sit permanently full.
+                img.sprite = GreyboxArt.WhiteSprite();
                 img.type = Image.Type.Filled;
                 img.fillMethod = Image.FillMethod.Horizontal;
                 img.fillOrigin = (int)Image.OriginHorizontal.Left;
