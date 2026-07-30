@@ -57,6 +57,18 @@ namespace Kagamura.Enemies
         [Tooltip("Seconds before an unobstructed projectile despawns.")]
         public float projectileLifetime = 3f;
 
+        [Header("Shielded (ignored by other types)")]
+        [Tooltip("Smallest single hit that breaks the guard. Sits above the fast weapon's " +
+                 "per-hit damage and at or below the committed ones — that gap is the whole " +
+                 "type: mashing the sickle into the front of this thing does nothing.")]
+        public int guardBreakDamage = 20;
+        [Tooltip("How long the guard stays down once broken. This is the player's damage window.")]
+        public float guardBrokenDuration = 2.5f;
+        [Tooltip("Sprite tint on a blocked hit — the 'that did nothing' read.")]
+        public Color guardBlockColor = new Color(0.65f, 0.7f, 0.8f);
+        [Tooltip("Sprite tint while the guard is broken, so the opening is unmissable.")]
+        public Color guardBrokenColor = new Color(1f, 0.9f, 0.35f);
+
         [Header("Telegraph")]
         [Tooltip("Sprite tint during windup — the visual tell the player reads to time a dodge.")]
         public Color windupColor = new Color(1f, 0.55f, 0.2f);

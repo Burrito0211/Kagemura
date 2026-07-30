@@ -33,6 +33,7 @@ namespace Kagamura.Systems
         private Color _baseColor;
         private Rigidbody2D _rb;
         private Coroutine _flashRoutine;
+        private IDamageFilter _filter;
 
         // Timed i-frames (post-hit) and held i-frames (dodge) are tracked separately so a
         // dodge ending never cancels post-hit invulnerability, and vice versa.
@@ -64,6 +65,7 @@ namespace Kagamura.Systems
         private void Awake()
         {
             _current = maxHealth;
+            _filter = GetComponent<IDamageFilter>();
             _rb = GetComponent<Rigidbody2D>();
             _sprite = GetComponentInChildren<SpriteRenderer>();
             if (_sprite != null) _baseColor = _sprite.color;
@@ -107,15 +109,25 @@ namespace Kagamura.Systems
                 return;
             }
 
+            // Armour and guards get the last word, after i-frames and before anything is spent.
+            // Copied out of the readonly parameter so a filter can weaken a hit as well as
+            // refuse it (chip damage, resistances) without the caller's struct changing.
+            DamageInfo resolved = info;
+            if (_filter != null && !_filter.FilterDamage(ref resolved))
+            {
+                OnDamageAvoided?.Invoke(resolved);
+                return;
+            }
+
             if (hitInvulnerability > 0f) GrantInvulnerability(hitInvulnerability);
 
-            _current = Mathf.Max(0, _current - info.Amount);
+            _current = Mathf.Max(0, _current - resolved.Amount);
             OnHealthChanged?.Invoke(_current, maxHealth);
-            OnDamaged?.Invoke(info);
+            OnDamaged?.Invoke(resolved);
 
             // Knockback (only meaningful on a dynamic body).
-            if (_rb != null && _rb.bodyType == RigidbodyType2D.Dynamic && info.KnockbackForce > 0f)
-                _rb.linearVelocity = info.KnockbackDir * info.KnockbackForce;
+            if (_rb != null && _rb.bodyType == RigidbodyType2D.Dynamic && resolved.KnockbackForce > 0f)
+                _rb.linearVelocity = resolved.KnockbackDir * resolved.KnockbackForce;
 
             if (_sprite != null)
             {

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d3ef571c4fbd44790545013549990a, type: 3}
+  m_Name: Shielded
+  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Enemies.EnemyData
+  displayName: Yokai Shieldbearer
+  maxHealth: 90
+  hitStagger: 0.12
+  moveSpeed: 2.2
+  chaseRange: 11
+  stopDistance: 1.2
+  attackRange: 1.8
+  damage: 16
+  knockbackForce: 9
+  windupTime: 0.5
+  activeTime: 0.12
+  recoveryTime: 0.55
+  attackCooldown: 1.5
+  hitboxSize: {x: 1.8, y: 1.5}
+  hitboxOffset: {x: 1.1, y: 0}
+  retreatDistance: 4
+  projectileSpeed: 9
+  projectileLifetime: 3
+  guardBreakDamage: 20
+  guardBrokenDuration: 2.5
+  guardBlockColor: {r: 0.65, g: 0.7, b: 0.8, a: 1}
+  guardBrokenColor: {r: 1, g: 0.9, b: 0.35, a: 1}
+  windupColor: {r: 1, g: 0.55, b: 0.2, a: 1}
