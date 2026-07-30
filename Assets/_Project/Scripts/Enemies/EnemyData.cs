@@ -47,6 +47,16 @@ namespace Kagamura.Enemies
         public Vector2 hitboxSize = new Vector2(1.6f, 1.4f);
         public Vector2 hitboxOffset = new Vector2(1f, 0f);
 
+        [Header("Ranged (ignored by melee types)")]
+        [Tooltip("Gives ground while the player is nearer than this. Set it inside attackRange, " +
+                 "or the enemy backs off before it ever gets a shot away.")]
+        public float retreatDistance = 4f;
+        [Tooltip("Projectile speed. Slow enough to be read and dodged is the point — this is the " +
+                 "second dodge window the type offers, after the windup.")]
+        public float projectileSpeed = 9f;
+        [Tooltip("Seconds before an unobstructed projectile despawns.")]
+        public float projectileLifetime = 3f;
+
         [Header("Telegraph")]
         [Tooltip("Sprite tint during windup — the visual tell the player reads to time a dodge.")]
         public Color windupColor = new Color(1f, 0.55f, 0.2f);
