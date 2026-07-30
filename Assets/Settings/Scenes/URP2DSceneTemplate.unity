@@ -991,8 +991,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Systems.Focus
   maxCharges: 5
   startingCharges: 0
-  pointsPerCharge: 100
-  focusPerAvoidedHit: 50
+  pointsPerCharge: 1
+  focusPerAvoidedHit: 1
 --- !u!114 &1190992113
 MonoBehaviour:
   m_ObjectHideFlags: 0
