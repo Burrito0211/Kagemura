@@ -57,6 +57,13 @@ namespace Kagamura.Enemies
         private float MoveSpeed => data.moveSpeed * (_phase == 2 ? _boss.phase2SpeedScale : 1f);
         private int BoltCount => _phase == 2 ? _boss.phase2Bolts : _boss.phase1Bolts;
 
+        /// <summary>Also takes the blocking layers, which the base has no field for.</summary>
+        public override void Configure(EnemyData enemyData, LayerMask target, LayerMask blocking)
+        {
+            base.Configure(enemyData, target, blocking);
+            blockingLayers = blocking;
+        }
+
         protected override void Awake()
         {
             base.Awake();

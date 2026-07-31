@@ -79,6 +79,20 @@ namespace Kagamura.Enemies
             _health.SetMaxHealth(data.maxHealth);
         }
 
+        /// <summary>
+        /// Hand an enemy its stats and layers before it wakes up, for anything that builds one at
+        /// runtime rather than placing it in the scene — the dev spawner now, wave spawners later.
+        ///
+        /// Must be called while the GameObject is still inactive. Awake reads <see cref="data"/>
+        /// the moment the component becomes active, so configuring afterwards is already too late:
+        /// the enemy would have logged a missing-data error and set its health from nothing.
+        /// </summary>
+        public virtual void Configure(EnemyData enemyData, LayerMask target, LayerMask blocking)
+        {
+            data = enemyData;
+            targetLayers = target;
+        }
+
         protected virtual void OnEnable() => _health.OnDamaged += HandleDamaged;
         protected virtual void OnDisable() => _health.OnDamaged -= HandleDamaged;
 

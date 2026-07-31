@@ -48,6 +48,13 @@ namespace Kagamura.Enemies
         private float _nextAttackTime;
         private Vector2 _aimDirection = Vector2.right;
 
+        /// <summary>Also takes the blocking layers, which the base has no field for.</summary>
+        public override void Configure(EnemyData enemyData, LayerMask target, LayerMask blocking)
+        {
+            base.Configure(enemyData, target, blocking);
+            blockingLayers = blocking;
+        }
+
         private void Update()
         {
             if (data == null || !_health.IsAlive) return;
