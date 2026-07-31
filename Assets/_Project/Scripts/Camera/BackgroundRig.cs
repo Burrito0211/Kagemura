@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace Kagamura.CameraRig
+namespace Kagemura.CameraRig
 {
     /// <summary>
     /// Build Order step 10 (spec §3.3): the separate background camera that 3D atmosphere is

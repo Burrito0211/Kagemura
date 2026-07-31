@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// Pause screen (spec §5): Resume, Controls, Restart, Quit to menu.

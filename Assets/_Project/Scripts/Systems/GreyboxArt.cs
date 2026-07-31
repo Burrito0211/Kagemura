@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Placeholder art shared by everything built from code during greybox — HUD bars, the

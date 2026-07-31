@@ -1,4 +1,4 @@
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Anything that can be hit — enemies, the player, breakable props.

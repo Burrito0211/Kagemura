@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Player.Weapons
+namespace Kagemura.Player.Weapons
 {
     /// <summary>
     /// The long-range option (spec §2.2): slow to fire, medium-high damage, and unspammable.
@@ -134,7 +134,7 @@ namespace Kagamura.Player.Weapons
             go.transform.localScale = new Vector3(greyboxArrowSize.x, greyboxArrowSize.y, 1f);
 
             var sprite = go.AddComponent<SpriteRenderer>();
-            sprite.sprite = Kagamura.Systems.GreyboxArt.WhiteSprite();
+            sprite.sprite = Kagemura.Systems.GreyboxArt.WhiteSprite();
             sprite.color = new Color(0.95f, 0.9f, 0.78f);
             sprite.sortingOrder = 10;
 

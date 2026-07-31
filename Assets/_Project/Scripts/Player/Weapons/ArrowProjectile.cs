@@ -1,7 +1,7 @@
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Player.Weapons
+namespace Kagemura.Player.Weapons
 {
     /// <summary>
     /// The bow's arrow (spec §2.2). Travels in a straight line, damages the first thing it

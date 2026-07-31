@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace Kagamura.Player.Specials
+namespace Kagemura.Player.Specials
 {
     /// <summary>
     /// Tunable stats for a special ability, authored as an asset (spec §2.4, §6) so cost and
     /// cooldown can be balanced without touching code. Same approach as WeaponData: one asset
     /// type with a section per variant, rather than a class per ability.
     /// </summary>
-    [CreateAssetMenu(fileName = "SpecialData", menuName = "Kagamura/Special Data")]
+    [CreateAssetMenu(fileName = "SpecialData", menuName = "Kagemura/Special Data")]
     public class SpecialData : ScriptableObject
     {
         [Header("Identity")]

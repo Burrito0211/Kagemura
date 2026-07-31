@@ -1,7 +1,7 @@
-using Kagamura.Player.Weapons;
+using Kagemura.Player.Weapons;
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Build Order step 11 — the final boss (spec §2.5): two attack phases, the second triggered
@@ -71,7 +71,7 @@ namespace Kagamura.Enemies
             _boss = data as BossData;
             if (_boss == null)
                 Debug.LogError($"[{name}] BossController needs a BossData asset (Create > " +
-                               "Kagamura > Boss Data), not a plain EnemyData. The fight will " +
+                               "Kagemura > Boss Data), not a plain EnemyData. The fight will " +
                                "not start.", this);
         }
 

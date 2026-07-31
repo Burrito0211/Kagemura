@@ -1,7 +1,7 @@
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Spec §2.5 Type C — the shielded yokai: punishes button-mashing, rewards the heavier

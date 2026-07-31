@@ -1,8 +1,8 @@
-using Kagamura.Player.Weapons;
-using Kagamura.Systems;
+using Kagemura.Player.Weapons;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Player
+namespace Kagemura.Player
 {
     /// <summary>
     /// Shared base for all melee/ranged weapons (spec §2.2). Owns cooldown gating and the
@@ -11,7 +11,7 @@ namespace Kagamura.Player
     /// </summary>
     public abstract class WeaponBase : MonoBehaviour
     {
-        [Tooltip("Stats asset for this weapon (Create > Kagamura > Weapon Data).")]
+        [Tooltip("Stats asset for this weapon (Create > Kagemura > Weapon Data).")]
         [SerializeField] protected WeaponData data;
 
         [Tooltip("Which layers this weapon can hit. Set to your Enemy layer.")]

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2d3ef571c4fbd44790545013549990a, type: 3}
   m_Name: Ranged
-  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Enemies.EnemyData
+  m_EditorClassIdentifier: Assembly-CSharp::Kagemura.Enemies.EnemyData
   displayName: Yokai Archer
   maxHealth: 40
   hitStagger: 0.15

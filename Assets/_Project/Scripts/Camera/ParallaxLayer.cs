@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.CameraRig
+namespace Kagemura.CameraRig
 {
     /// <summary>
     /// Build Order step 10 (spec §3.3): drifts a background layer against camera movement.

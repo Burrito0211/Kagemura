@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace Kagamura.Player.Weapons
+namespace Kagemura.Player.Weapons
 {
     /// <summary>
     /// Tunable stats for a weapon, authored as an asset so damage/range/combo can be
     /// balanced without touching code (spec §2.2, §6). Sword, Sickle, and Bow will each
     /// be one of these assets, differentiated by data rather than unique code paths.
     /// </summary>
-    [CreateAssetMenu(fileName = "WeaponData", menuName = "Kagamura/Weapon Data")]
+    [CreateAssetMenu(fileName = "WeaponData", menuName = "Kagemura/Weapon Data")]
     public class WeaponData : ScriptableObject
     {
         [Header("Identity")]

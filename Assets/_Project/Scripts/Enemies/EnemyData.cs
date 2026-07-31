@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Tunable stats for one enemy type, authored as an asset (spec §6) so behaviour is
@@ -10,7 +10,7 @@ namespace Kagamura.Enemies
     /// The attack timings here are the numbers the dodge is balanced against: windup is the
     /// player's read, and iFrameDuration on DodgeController must comfortably cover activeTime.
     /// </summary>
-    [CreateAssetMenu(fileName = "EnemyData", menuName = "Kagamura/Enemy Data")]
+    [CreateAssetMenu(fileName = "EnemyData", menuName = "Kagemura/Enemy Data")]
     public class EnemyData : ScriptableObject
     {
         [Header("Identity")]

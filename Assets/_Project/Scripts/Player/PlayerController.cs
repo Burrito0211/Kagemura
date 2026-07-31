@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.Player
+namespace Kagemura.Player
 {
     /// <summary>
     /// Build Order step 1: run, jump, single mid-air jump, fall.

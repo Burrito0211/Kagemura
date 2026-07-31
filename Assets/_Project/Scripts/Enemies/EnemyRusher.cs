@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Spec §2.5 Type A — the melee rusher: closes distance and punishes standing still.

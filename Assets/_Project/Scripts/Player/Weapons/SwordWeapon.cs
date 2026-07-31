@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Player.Weapons
+namespace Kagemura.Player.Weapons
 {
     /// <summary>
     /// The balanced default weapon (spec §2.2): a 2-hit combo. Chain the second swing within

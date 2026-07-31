@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// The controls pop-up: one row per thing the player character can do, each showing the key

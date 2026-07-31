@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// The rebindable half of the input setup: which player actions the settings window is

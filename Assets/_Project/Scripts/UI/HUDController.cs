@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Kagamura.Player;
-using Kagamura.Systems;
+using Kagemura.Player;
+using Kagemura.Systems;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// Build Order step 4: the HUD half. Listens to the player's Health events (spec §6 —

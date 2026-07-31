@@ -1,8 +1,8 @@
-using Kagamura.Player.Weapons;
-using Kagamura.Systems;
+using Kagemura.Player.Weapons;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Spec §2.5 Type B — the ranged yokai: punishes reckless approach, rewards dodge timing.

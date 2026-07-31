@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using Kagamura.Enemies;
-using Kagamura.Systems;
+using Kagemura.Enemies;
+using Kagemura.Systems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.Player
+namespace Kagemura.Player
 {
     /// <summary>
     /// Parry (spec §2.3, §9 answered as dodge + parry): a short window that negates an incoming

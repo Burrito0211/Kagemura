@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Player.Specials
+namespace Kagemura.Player.Specials
 {
     /// <summary>
     /// Shared base for the two specials (spec §2.4), mirroring WeaponBase: this owns the cost
@@ -14,7 +14,7 @@ namespace Kagamura.Player.Specials
     /// </summary>
     public abstract class SpecialAbility : MonoBehaviour
     {
-        [Tooltip("Stats asset for this ability (Create > Kagamura > Special Data).")]
+        [Tooltip("Stats asset for this ability (Create > Kagemura > Special Data).")]
         [SerializeField] protected SpecialData data;
 
         [Tooltip("Which layers this ability can hit. Set to your Enemy layer.")]

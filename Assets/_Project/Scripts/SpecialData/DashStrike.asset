@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b7c40d915e83f6489a1c05e37b6d842, type: 3}
   m_Name: DashStrike
-  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Player.Specials.SpecialData
+  m_EditorClassIdentifier: Assembly-CSharp::Kagemura.Player.Specials.SpecialData
   displayName: Dash-Strike
   focusCost: 2
   cooldown: 0.9

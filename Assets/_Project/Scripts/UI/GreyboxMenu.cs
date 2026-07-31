@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// Build Order step 13: the shared body of every full-screen menu (spec §5) — main menu,

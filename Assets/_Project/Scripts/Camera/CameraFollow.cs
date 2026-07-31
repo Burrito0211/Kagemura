@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.CameraRig
+namespace Kagemura.CameraRig
 {
     /// <summary>
     /// Build Order step 1: smooth camera follow for 2D side-scrolling.

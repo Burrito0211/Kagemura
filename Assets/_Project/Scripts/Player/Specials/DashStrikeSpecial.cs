@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Kagamura.Player.Specials
+namespace Kagemura.Player.Specials
 {
     /// <summary>
     /// Special 2 — the utility/mobility option (spec §2.4): a long forward dash that damages

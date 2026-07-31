@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.Player.Specials
+namespace Kagemura.Player.Specials
 {
     /// <summary>
     /// Reads the two special inputs and forwards them to the abilities on the player — the

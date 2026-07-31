@@ -1,4 +1,4 @@
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Sits between a hit and the Health that would take it. Health looks for one of these on

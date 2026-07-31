@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Data passed to anything taking damage. Kept as a struct so hits are allocation-free.

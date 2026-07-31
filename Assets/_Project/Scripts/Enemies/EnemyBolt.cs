@@ -1,8 +1,8 @@
-using Kagamura.Player.Weapons;
-using Kagamura.Systems;
+using Kagemura.Player.Weapons;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// One place to make the projectiles enemies throw, shared by the archer and the boss.

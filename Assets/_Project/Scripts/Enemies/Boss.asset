@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d92f4a17c8e0b3f4b8156c2eda7093f1, type: 3}
   m_Name: Boss
-  m_EditorClassIdentifier: Assembly-CSharp::Kagamura.Enemies.BossData
+  m_EditorClassIdentifier: Assembly-CSharp::Kagemura.Enemies.BossData
   displayName: Onikage
   maxHealth: 400
   hitStagger: 0.08

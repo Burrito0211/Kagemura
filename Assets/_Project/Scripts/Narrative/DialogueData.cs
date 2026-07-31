@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Kagamura.Narrative
+namespace Kagemura.Narrative
 {
     /// <summary>
     /// One story beat, authored as an asset (spec §6) so the writing lives outside the code and
@@ -15,7 +15,7 @@ namespace Kagamura.Narrative
     /// Spec §3.2 wants beats placed at natural pacing breaks, which is why these are assets
     /// dropped onto triggers rather than a timeline: moving a beat is moving a trigger.
     /// </summary>
-    [CreateAssetMenu(fileName = "Dialogue", menuName = "Kagamura/Dialogue")]
+    [CreateAssetMenu(fileName = "Dialogue", menuName = "Kagemura/Dialogue")]
     public class DialogueData : ScriptableObject
     {
         [Serializable]

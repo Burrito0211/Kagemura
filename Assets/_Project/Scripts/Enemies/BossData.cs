@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Boss stats: everything an ordinary enemy has, plus what the second phase changes.
@@ -13,7 +13,7 @@ namespace Kagamura.Enemies
     /// Phase 1 uses the inherited values; the multipliers below are what phase 2 does to them,
     /// so tuning the fight is mostly a matter of asking how much sharper the second half should be.
     /// </summary>
-    [CreateAssetMenu(fileName = "BossData", menuName = "Kagamura/Boss Data")]
+    [CreateAssetMenu(fileName = "BossData", menuName = "Kagemura/Boss Data")]
     public class BossData : EnemyData
     {
         [Header("Phase 2 Trigger")]

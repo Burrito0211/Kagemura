@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.CameraRig
+namespace Kagemura.CameraRig
 {
     /// <summary>
     /// The slow-turning 3D silhouette the spec asks for behind gameplay (§3.3) — a torii gate,

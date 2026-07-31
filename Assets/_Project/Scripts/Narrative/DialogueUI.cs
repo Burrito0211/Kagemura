@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Kagamura.Narrative
+namespace Kagemura.Narrative
 {
     /// <summary>
     /// Build Order step 12: the text box story beats are delivered through (spec §3.2).

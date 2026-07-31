@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Stacking damage-over-time, applied by the sickle (spec §2.2). Added to a victim on

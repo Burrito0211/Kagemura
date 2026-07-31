@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.Player
+namespace Kagemura.Player
 {
     /// <summary>
     /// Build Order step 3: Dead Cells-style dodge roll with invulnerability frames (spec §2.3).

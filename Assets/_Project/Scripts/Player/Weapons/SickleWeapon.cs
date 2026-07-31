@@ -1,7 +1,7 @@
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Player.Weapons
+namespace Kagemura.Player.Weapons
 {
     /// <summary>
     /// The aggressive close-range option (spec §2.2): fast, very short reach, poor damage per

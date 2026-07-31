@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Kagamura.Player.Specials
+namespace Kagemura.Player.Specials
 {
     /// <summary>
     /// Special 1 — the offensive burst (spec §2.4): a rooted AoE slam around the player.

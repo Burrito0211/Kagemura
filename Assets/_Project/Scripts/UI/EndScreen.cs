@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Kagamura.Enemies;
-using Kagamura.Player;
-using Kagamura.Systems;
+using Kagemura.Enemies;
+using Kagemura.Player;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// Game over and the ending, in one screen (spec §5).

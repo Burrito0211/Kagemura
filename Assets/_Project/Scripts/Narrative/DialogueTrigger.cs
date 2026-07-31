@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kagamura.Narrative
+namespace Kagemura.Narrative
 {
     /// <summary>
     /// Fires a story beat when the player walks into it (spec §3.2, delivered at natural pacing

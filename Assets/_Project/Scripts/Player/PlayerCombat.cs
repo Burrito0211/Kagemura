@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.Player
+namespace Kagemura.Player
 {
     /// <summary>
     /// Reads the Attack input and forwards it to the currently equipped weapon, and cycles

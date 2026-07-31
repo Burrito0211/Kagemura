@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Build Order step 7: the single resource both specials spend (spec §2.4 — one pool, not
