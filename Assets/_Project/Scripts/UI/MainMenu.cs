@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// Title screen (spec §5): Start, Controls, Quit.
@@ -18,7 +18,7 @@ namespace Kagamura.UI
         [Tooltip("Controls window. Found in the scene if left empty; the button hides without one.")]
         [SerializeField] private SettingsWindow settings;
 
-        protected override string Title => "HAZAKURA";
+        protected override string Title => "KAGEMURA";
 
         protected override void Awake()
         {

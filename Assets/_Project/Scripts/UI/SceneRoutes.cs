@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// The two scene names every menu needs, and one safe way to load them.
@@ -17,7 +17,9 @@ namespace Kagamura.UI
     /// </summary>
     public static class SceneRoutes
     {
-        public const string DefaultMainMenu = "MainMenu";
+        // Must match the scene file's name exactly, spaces included — SceneManager matches on the
+        // name, so renaming the asset silently kills every "Quit to Menu" button in the game.
+        public const string DefaultMainMenu = "Main Menu";
         public const string DefaultFirstLevel = "Game";
 
         public static void Load(string sceneName)
