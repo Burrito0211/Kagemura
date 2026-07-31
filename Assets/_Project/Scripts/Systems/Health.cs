@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace Kagamura.Systems
+namespace Kagemura.Systems
 {
     /// <summary>
     /// Event-driven health, shared by the player, enemies, and the boss (spec §6).
@@ -149,6 +149,29 @@ namespace Kagamura.Systems
         {
             OnDied?.Invoke();
             if (destroyOnDeath) Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// Change the colour the hit flash returns to, and show it now if nothing is flashing.
+        ///
+        /// The flash used to snapshot a colour in Awake and put that back when it ended, which is
+        /// wrong as soon as anything else tints the same sprite. Enemies tint constantly — the
+        /// attack telegraph, the shielded guard states, the boss's phase 2 — so a hit would flash
+        /// and then repaint the enemy to its *startup* colour, throwing away the state colour that
+        /// was live. Landing a hit during a wind-up erased the tell for an attack that was still
+        /// coming, which reads as the telegraph being broken rather than as a colour conflict.
+        ///
+        /// Anything that owns a resting colour goes through here, so there is one writer and the
+        /// flash always has something current to return to.
+        /// </summary>
+        public void SetBaseColor(Color color)
+        {
+            _baseColor = color;
+
+            // Mid-flash the sprite belongs to the coroutine. Writing here would cut the flash
+            // short; it picks this up when it ends, which is what makes a telegraph that starts
+            // during a flash appear the moment the flash is over.
+            if (_flashRoutine == null && _sprite != null) _sprite.color = color;
         }
 
         private IEnumerator Flash()

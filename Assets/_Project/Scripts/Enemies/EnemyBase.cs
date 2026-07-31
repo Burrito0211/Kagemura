@@ -1,7 +1,7 @@
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 
-namespace Kagamura.Enemies
+namespace Kagemura.Enemies
 {
     /// <summary>
     /// Shared plumbing for every enemy (spec §6): target tracking, facing, stagger on hit,
@@ -12,7 +12,7 @@ namespace Kagamura.Enemies
     [RequireComponent(typeof(Health))]
     public abstract class EnemyBase : MonoBehaviour
     {
-        [Tooltip("Stats asset for this enemy (Create > Kagamura > Enemy Data).")]
+        [Tooltip("Stats asset for this enemy (Create > Kagemura > Enemy Data).")]
         [SerializeField] protected EnemyData data;
 
         [Tooltip("Which layers this enemy's attacks can hit. Set to your Player layer.")]
@@ -116,7 +116,7 @@ namespace Kagamura.Enemies
                 return;
             }
 
-            var player = FindFirstObjectByType<Kagamura.Player.PlayerController>();
+            var player = FindFirstObjectByType<Kagemura.Player.PlayerController>();
             if (player != null) target = player.transform;
             else Debug.LogWarning($"[{name}] No target set, nothing tagged 'Player', and no " +
                                   "PlayerController in the scene — this enemy will stand still.", this);
@@ -202,9 +202,20 @@ namespace Kagamura.Enemies
             ? (Vector2)transform.position
             : (Vector2)transform.position + new Vector2(data.hitboxOffset.x * _facing, data.hitboxOffset.y);
 
+        /// <summary>
+        /// Set the enemy's resting colour — telegraph, guard state, boss phase.
+        ///
+        /// Routed through Health rather than written straight to the renderer, because Health's
+        /// hit flash owns that renderer for a moment and has to know what to put back. Written
+        /// directly, a hit landing mid-telegraph would end with the enemy back at its startup
+        /// colour and the wind-up tell gone while the swing was still coming.
+        /// </summary>
         protected void SetTint(Color c)
         {
-            if (_sprite != null) _sprite.color = c;
+            if (_sprite == null) return;
+
+            if (_health != null) _health.SetBaseColor(c);
+            else _sprite.color = c;
         }
 
         protected void ResetTint() => SetTint(_baseColor);
