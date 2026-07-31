@@ -1,8 +1,8 @@
-using Kagamura.Systems;
+using Kagemura.Systems;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Kagamura.UI
+namespace Kagemura.UI
 {
     /// <summary>
     /// A small health bar floating above whatever it's attached to — enemies now, the boss
@@ -39,6 +39,14 @@ namespace Kagamura.UI
         private Health _health;
         private float _hideAt;
         private float _baseScaleX = 1f;
+
+        /// <summary>
+        /// Raise the bar before it is built. Only for code that assembles an object at runtime,
+        /// and only while that object is still inactive — the offset is baked in by Awake. Exists
+        /// because the boss body is a metre taller than a normal enemy, and one fixed offset
+        /// either buries the boss's bar in its chest or floats every other one in the air.
+        /// </summary>
+        public void SetHeightOffset(float value) => heightOffset = value;
 
         private void Awake()
         {

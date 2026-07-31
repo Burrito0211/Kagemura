@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Kagamura.Enemies;
-using Kagamura.Player;
-using Kagamura.Systems;
-using Kagamura.UI;
+using Kagemura.Enemies;
+using Kagemura.Player;
+using Kagemura.Systems;
+using Kagemura.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kagamura.DevTools
+namespace Kagemura.DevTools
 {
     /// <summary>
     /// Dev tool: press ` to open a menu that drops an enemy in front of the player.
@@ -164,11 +164,19 @@ namespace Kagamura.DevTools
             go.layer = enemyLayer;
             go.transform.position = SpawnPosition();
 
-            var sprite = go.AddComponent<SpriteRenderer>();
+            // The body is a child so the root can stay at unit scale. Scaling the root is the
+            // obvious way to size a greybox, but everything else parented to it inherits the
+            // stretch — a 1x1.8 body would hand the health bar's world canvas the same 1.8, and
+            // the boss would get a bar half again as wide as its own. EnemyBase finds this with
+            // GetComponentInChildren, so the controllers are unaffected.
+            var bodyGo = new GameObject("Body", typeof(SpriteRenderer));
+            bodyGo.transform.SetParent(go.transform, false);
+            bodyGo.transform.localScale = new Vector3(size.x, size.y, 1f);
+
+            var sprite = bodyGo.GetComponent<SpriteRenderer>();
             sprite.sprite = GreyboxArt.WhiteSprite();
             sprite.color = TintFor(entry.kind);
             sprite.drawMode = SpriteDrawMode.Simple;
-            go.transform.localScale = new Vector3(size.x, size.y, 1f);
 
             var rb = go.AddComponent<Rigidbody2D>();
             rb.freezeRotation = true;
@@ -177,7 +185,7 @@ namespace Kagamura.DevTools
             // On this GameObject, not a child: weapons overlap for colliders and then ask the
             // collider they hit for IDamageable, which lives on Health here.
             var col = go.AddComponent<BoxCollider2D>();
-            col.size = Vector2.one;              // scaled by the transform above
+            col.size = size;                     // the root is unit scale, so this is world size
 
             // Adding the controller pulls in Health via RequireComponent.
             EnemyBase enemy = entry.kind switch
@@ -187,6 +195,13 @@ namespace Kagamura.DevTools
                 Kind.Boss => go.AddComponent<BossController>(),
                 _ => go.AddComponent<EnemyRusher>()
             };
+
+            // WorldHealthBar, not HUDController: the latter is the player's screen-corner HUD and
+            // binds to the player's own Health, so one per enemy would stack duplicate full-screen
+            // canvases that disappear as their enemy dies. Health is already on the object by now,
+            // pulled in by the controller above, which is what this bar's RequireComponent wants.
+            var healthBar = go.AddComponent<WorldHealthBar>();
+            healthBar.SetHeightOffset(size.y * 0.5f + 0.35f);   // clears the body at any height
 
             enemy.Configure(entry.data, enemyTargetLayers, blockingLayers);
 
@@ -208,10 +223,8 @@ namespace Kagamura.DevTools
 
         private static Color TintFor(Kind kind) => kind switch
         {
-            Kind.Ranged => new Color(0.62f, 0.4f, 0.85f),
-            Kind.Shielded => new Color(0.65f, 0.7f, 0.8f),
             Kind.Boss => new Color(0.85f, 0.2f, 0.3f),
-            _ => new Color(0.85f, 0.45f, 0.3f)
+            _ => new Color(1f, 1f, 1f)
         };
 
         private static Transform ResolvePlayer()
