@@ -81,6 +81,24 @@ Both specials share one resource pool (e.g., "Focus") to avoid building two sepa
 - Seasonal palette shifts handle most of the "visual variety" workload without requiring new art categories per level.
 
 ### 3.2 Story
+
+> **STATUS — DEFERRED 2026-07-31. Do not pick this up unless explicitly asked.**
+>
+> **Deferred, not cut.** The story stays in the design; only the authoring work is postponed.
+>
+> What exists: the whole delivery system — `DialogueData`, `DialogueTrigger`, `DialogueUI`
+> (commit `96b7590`). It works and needs no further code.
+>
+> What does not exist: any content. There are zero `DialogueData` assets in the project and
+> zero `DialogueTrigger` instances in any scene, so every beat is currently a no-op.
+>
+> Why deferred: blocked on the protagonist's motivation (§9), which is undecided — beats
+> can't be written before the thing they reveal exists. §3.2 also recommends placing beats
+> after combat pacing is known, and the levels (Build Order step 9) aren't built yet.
+>
+> To resume: decide the motivation in §9, author `DialogueData` assets, drop
+> `DialogueTrigger` components into the level scenes. No new scripts required.
+
 - Short, linear narrative following a masked ronin traveling through yokai-corrupted land across the four seasons, driven by a personal motivation (revenge, redemption, or seeking someone lost) revealed gradually.
 - Structure: opening hook (why the ronin is on this path) → 1–2 mid-game story beats (one per season transition, revealing more of the motivation/backstory) → ending resolved at the boss fight.
 - Delivered via short dialogue/text boxes or environmental storytelling — avoid heavy cutscene production cost.
@@ -233,7 +251,7 @@ Notes:
 9. **Level greybox → art pass**, level by level.
 10. **3D background layer system.**
 11. **Boss fight (2 phases).**
-12. **Story/dialogue integration.**
+12. ~~**Story/dialogue integration.**~~ — **DEFERRED 2026-07-31, skip this step.** System is built; content is unwritten and blocked on §9's motivation question. Full note in §3.2.
 13. **UI/menus (main menu, pause, game over, win screen).**
 14. **Playtesting pass (4–5 people, start to finish).**
 15. **Polish:** juice (hit-stop, screen shake, particles), audio, bug fixing.
@@ -257,4 +275,4 @@ Notes:
 - Story delivery: text boxes, voice-lite (grunts/sfx + text), or full dialogue UI with portraits?
 - Art medium for 2D sprites: pixel art vs. hand-drawn/vector — both can support the ukiyo-e direction, but affect workload differently (pixel art may be faster solo; vector/flat-shaded may match the woodblock look more directly).
 - Final title: confirm "Hazakura" or one of the listed alternates.
-- Exact protagonist backstory/motivation (revenge vs. redemption vs. searching for someone) — needed before writing story beats.
+- Exact protagonist backstory/motivation (revenge vs. redemption vs. searching for someone) — needed before writing story beats. **This is what Build Order step 12 is blocked on (deferred 2026-07-31, see §3.2); answering it is what unblocks it.**
