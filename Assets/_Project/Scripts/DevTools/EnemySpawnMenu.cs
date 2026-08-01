@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Kagemura.Enemies;
 using Kagemura.Player;
-using Kagemura.Systems;
 using Kagemura.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,30 +15,23 @@ namespace Kagemura.DevTools
     /// and the alternative to this is hand-building a GameObject in the scene every time you want
     /// to see whether a guard threshold or a phase timing is right.
     ///
-    /// It builds enemies from code rather than from prefabs, so it works with no setup at all —
-    /// but that means it also encodes the three things that silently break a hand-built enemy,
-    /// each of which cost time to find the hard way:
-    ///   - The collider goes on the same GameObject as Health, or weapons find it and then fail
-    ///     to find anything damageable on it.
-    ///   - The enemy layer has to be one the player's weapons actually target.
-    ///   - Its own target layers have to include the player, or it tracks you and swings through you.
-    ///
-    /// All three are detected from what is already in the scene rather than asked for, so the
-    /// menu cannot be misconfigured into spawning enemies that look fine and do nothing.
+    /// It builds enemies from code rather than from prefabs, so it works with no setup at all.
+    /// The construction itself lives in <see cref="EnemyFactory"/>, shared with the level scenes;
+    /// what this adds is finding the three layer settings from what is already in the scene rather
+    /// than asking for them, so the menu cannot be misconfigured into spawning enemies that look
+    /// fine and do nothing.
     ///
     /// Delete this folder before shipping; nothing in the game references it.
     /// </summary>
     public class EnemySpawnMenu : GreyboxMenu
     {
-        public enum Kind { Rusher, Ranged, Shielded, Boss }
-
         [Serializable]
         public struct Entry
         {
             [Tooltip("Button label.")]
             public string label;
             [Tooltip("Which controller to attach.")]
-            public Kind kind;
+            public EnemyKind kind;
             [Tooltip("Stats asset. A Boss entry needs a BossData asset.")]
             public EnemyData data;
         }
@@ -137,9 +129,9 @@ namespace Kagemura.DevTools
         /// <summary>
         /// Build one enemy and drop it in front of the player.
         ///
-        /// Assembled while inactive on purpose: adding a controller to a live GameObject runs its
-        /// Awake immediately, which reads the stats asset — so the data has to be in place before
-        /// the object is switched on, or the enemy wakes up with nothing and logs an error.
+        /// No body sprite is passed, so the factory uses the in-memory greybox one. That is the
+        /// right choice for a spawn: it is thrown away with the play session and never has to
+        /// survive a save, unlike the enemies the level builder bakes into a scene.
         /// </summary>
         public GameObject Spawn(Entry entry)
         {
@@ -149,64 +141,17 @@ namespace Kagemura.DevTools
                 return null;
             }
 
-            if (entry.kind == Kind.Boss && !(entry.data is BossData))
+            return EnemyFactory.Build(new EnemyFactory.Setup
             {
-                Debug.LogError($"[EnemySpawnMenu] '{entry.label}' is a Boss entry but its asset is " +
-                               "plain EnemyData. The boss needs a BossData asset.", this);
-                return null;
-            }
-
-            bool isBoss = entry.kind == Kind.Boss;
-            Vector2 size = isBoss ? bossBodySize : bodySize;
-
-            var go = new GameObject($"{entry.data.displayName} (spawned)");
-            go.SetActive(false);
-            go.layer = enemyLayer;
-            go.transform.position = SpawnPosition();
-
-            // The body is a child so the root can stay at unit scale. Scaling the root is the
-            // obvious way to size a greybox, but everything else parented to it inherits the
-            // stretch — a 1x1.8 body would hand the health bar's world canvas the same 1.8, and
-            // the boss would get a bar half again as wide as its own. EnemyBase finds this with
-            // GetComponentInChildren, so the controllers are unaffected.
-            var bodyGo = new GameObject("Body", typeof(SpriteRenderer));
-            bodyGo.transform.SetParent(go.transform, false);
-            bodyGo.transform.localScale = new Vector3(size.x, size.y, 1f);
-
-            var sprite = bodyGo.GetComponent<SpriteRenderer>();
-            sprite.sprite = GreyboxArt.WhiteSprite();
-            sprite.color = TintFor(entry.kind);
-            sprite.drawMode = SpriteDrawMode.Simple;
-
-            var rb = go.AddComponent<Rigidbody2D>();
-            rb.freezeRotation = true;
-            rb.gravityScale = 1f;
-
-            // On this GameObject, not a child: weapons overlap for colliders and then ask the
-            // collider they hit for IDamageable, which lives on Health here.
-            var col = go.AddComponent<BoxCollider2D>();
-            col.size = size;                     // the root is unit scale, so this is world size
-
-            // Adding the controller pulls in Health via RequireComponent.
-            EnemyBase enemy = entry.kind switch
-            {
-                Kind.Ranged => go.AddComponent<EnemyRanged>(),
-                Kind.Shielded => go.AddComponent<EnemyShielded>(),
-                Kind.Boss => go.AddComponent<BossController>(),
-                _ => go.AddComponent<EnemyRusher>()
-            };
-
-            // WorldHealthBar, not HUDController: the latter is the player's screen-corner HUD and
-            // binds to the player's own Health, so one per enemy would stack duplicate full-screen
-            // canvases that disappear as their enemy dies. Health is already on the object by now,
-            // pulled in by the controller above, which is what this bar's RequireComponent wants.
-            var healthBar = go.AddComponent<WorldHealthBar>();
-            healthBar.SetHeightOffset(size.y * 0.5f + 0.35f);   // clears the body at any height
-
-            enemy.Configure(entry.data, enemyTargetLayers, blockingLayers);
-
-            go.SetActive(true);
-            return go;
+                data = entry.data,
+                kind = entry.kind,
+                layer = enemyLayer,
+                targetLayers = enemyTargetLayers,
+                blockingLayers = blockingLayers,
+                bodySize = entry.kind == EnemyKind.Boss ? bossBodySize : bodySize,
+                objectName = $"{entry.data.displayName} (spawned)",
+                addHealthBar = true
+            }, SpawnPosition());
         }
 
         private Vector3 SpawnPosition()
@@ -220,12 +165,6 @@ namespace Kagemura.DevTools
 
             return _player.position + new Vector3(spawnDistance * facing, spawnHeight, 0f);
         }
-
-        private static Color TintFor(Kind kind) => kind switch
-        {
-            Kind.Boss => new Color(0.85f, 0.2f, 0.3f),
-            _ => new Color(1f, 1f, 1f)
-        };
 
         private static Transform ResolvePlayer()
         {
@@ -283,13 +222,12 @@ namespace Kagemura.DevTools
                 var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<EnemyData>(path);
                 if (asset == null) continue;
 
-                string assetName = asset.name.ToLowerInvariant();
-                Kind kind = asset is BossData ? Kind.Boss
-                          : assetName.Contains("range") ? Kind.Ranged
-                          : assetName.Contains("shield") ? Kind.Shielded
-                          : Kind.Rusher;
-
-                found.Add(new Entry { label = asset.displayName, kind = kind, data = asset });
+                found.Add(new Entry
+                {
+                    label = asset.displayName,
+                    kind = EnemyFactory.GuessKind(asset),
+                    data = asset
+                });
             }
 
             entries = found.ToArray();
