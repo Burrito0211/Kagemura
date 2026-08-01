@@ -49,6 +49,8 @@ This hook should inform naming, palette choices, and enemy/boss flavor text thro
 
 Implementation note: build all three off a shared `WeaponBase` class/interface (attack timing, hitbox activation, damage value, on-hit effect) rather than separate systems per weapon. Differentiate via data (ScriptableObject stats) wherever possible instead of unique code paths.
 
+Each weapon is also sharpened by one season — see §2.6.
+
 ### 2.3 Dodge / Parry
 - **Dodge with i-frames** (Dead Cells-style) — safer to tune, more forgiving for a first solo project. Built at step 3 and the base of the combat loop.
 - **Decided: dodge + parry** (was §9's first open question, settled 2026-07-30). The parry was built on top of the dodge, not instead of it, and the two are deliberately different answers to the same moment:
@@ -71,6 +73,49 @@ Both specials share one resource pool (e.g., "Focus") to avoid building two sepa
   - **Type C (optional) – Shielded/armored:** punishes button-mashing, rewards using the heavier weapon or specials.
 - **1 final boss:** 2 attack phases, phase 2 triggered at an HP threshold with a visual tell (color change, arena change, etc.)
 
+### 2.6 Seasonal Weapon Edge
+
+> **STATUS — DESIGNED 2026-08-02, NOT BUILT.** Slots into Build Order as step 13.5.
+
+**Each season sharpens one weapon.** The blade answers the season it is carried through — a
+flavour hook (§1.1) that also gives the four levels a mechanical identity, not just a palette.
+
+| Season | Sharpened | What "sharpened" means | Why this pairing |
+|---|---|---|---|
+| **Spring** | **Sword** | Second combo hit strikes harder | The season you learn the sword in. Reinforces the tutorial rather than distracting from it. |
+| **Summer** | **Bow** | Faster charge / cheaper shot | Summer is the vertical level with archers on perches. Range duels range. |
+| **Autumn** | **Sickle** | Bleed stacks faster and lasts longer | Narrow platforms over pits force close quarters — you cannot kite on a ten-unit ledge. Decay season, bleed as curse-mark (§1.1): the strongest thematic pairing of the set. |
+| **Winter** | **None** | — | See below. |
+
+**Winter deliberately sharpens nothing.** There are three weapons and four seasons, and the honest
+answer to that mismatch is not to invent a fourth weapon (§8 forbids it) or to double up a season.
+Winter is where the game stops helping — every enemy type at once, no edge, straight into the
+arena. That is a real dramatic beat for zero engineering, and it is the reason the mismatch is a
+feature rather than a hole to patch.
+
+**Rules this system must obey:**
+
+1. **The edge is a nudge, not a mandate.** If the sharpened weapon is strictly correct, three
+   weapons collapse into one per level and the game gets *less* varied — the opposite of the
+   point, and a direct contradiction of §2.2's distinct playstyles. Start around **+20%** and let
+   playtesting push it, not the other way round.
+2. **Every season keeps a reason to switch.** Autumn sharpens the sickle *and* introduces the
+   shielded yokai, which the sickle is bad against (§2.5 — armour punishes chip damage). That
+   tension is deliberate and every season needs its own version of it.
+3. **Sharpen the weapon's identity, not its damage number.** A flat damage multiplier is nearly
+   worthless on the sickle (low per hit, the bleed does the work) and overwhelming on the bow
+   (already medium-high). One number per weapon, chosen to amplify what that weapon already is —
+   see the table.
+4. **The player must be told.** The HUD already has a weapon indicator (§5); the sharpened one
+   gets marked there, plus a line at level start. An invisible buff is worse than no buff — it
+   changes the numbers without changing any decision.
+5. **Never write the buff into the `WeaponData` asset.** ScriptableObject edits persist in the
+   editor and leak between play sessions, so a spring bonus applied that way is still there in
+   winter and still there tomorrow. It has to be a runtime multiplier layered over the data.
+
+Not a §8 violation: this adds no weapon, special, enemy or boss. It is one field on `LevelData`,
+one multiplier in `WeaponBase`, and one HUD marker.
+
 ---
 
 ## 3. Levels & Story
@@ -84,12 +129,12 @@ Both specials share one resource pool (e.g., "Focus") to avoid building two sepa
 seasons plus the arena, linked end to end, Start button to boss. What each season introduces was
 settled as **enemy types, not hazards**:
 
-| Level | Introduces | Terrain |
-|---|---|---|
-| Spring | Rusher only | Flat, wide gaps — movement and the sword |
-| Summer | Ranged, on perches | Vertical, climbable |
-| Autumn | Shielded | Narrow platforms over pits |
-| Winter | All three together | Mixed, leads into the arena |
+| Level | Introduces | Terrain | Sharpens (§2.6) |
+|---|---|---|---|
+| Spring | Rusher only | Flat, wide gaps — movement and the sword | Sword |
+| Summer | Ranged, on perches | Vertical, climbable | Bow |
+| Autumn | Shielded | Narrow platforms over pits | Sickle |
+| Winter | All three together | Mixed, leads into the arena | Nothing |
 
 Three enemy types across four seasons is exactly enough to introduce one at a time and then
 combine them, so no environmental hazard was built. §3.1 offers "one enemy type **or** one hazard"
@@ -275,6 +320,10 @@ Notes:
 11. **Boss fight (2 phases).**
 12. ~~**Story/dialogue integration.**~~ — **DEFERRED 2026-07-31, skip this step.** System is built; content is unwritten and blocked on §9's motivation question. Full note in §3.2.
 13. **UI/menus (main menu, pause, game over, win screen).**
+13.5. **Seasonal weapon edge (§2.6).** After the HUD exists, because the buff has to be visible to
+    mean anything, and before the playtest, because "did you notice which weapon was sharpened,
+    and did you switch anyway?" is the question that tells you whether it works. Small: one field
+    on `LevelData`, one multiplier in `WeaponBase`, one HUD marker.
 14. **Playtesting pass (4–5 people, start to finish).**
 15. **Polish:** juice (hit-stop, screen shake, particles), audio, bug fixing.
 16. **Build export + buffer.**
@@ -294,6 +343,7 @@ Notes:
 ## 9. Open Questions (to resolve during prototyping)
 - ~~Final decision: dodge-only vs. dodge+parry?~~ **Resolved 2026-07-30: dodge + parry.** See §2.3.
 - Resource system for bow/specials: shared "Focus" meter, or separate stamina/mana?
+- How large is the seasonal weapon edge (§2.6)? Starts at ~+20%. The number that matters is not the damage — it is whether a playtester still switches weapons inside a season. Too big and the level becomes single-weapon; too small and nobody notices. Only a playtest answers it.
 - Story delivery: text boxes, voice-lite (grunts/sfx + text), or full dialogue UI with portraits?
 - Art medium for 2D sprites: pixel art vs. hand-drawn/vector — both can support the ukiyo-e direction, but affect workload differently (pixel art may be faster solo; vector/flat-shaded may match the woodblock look more directly).
 - Final title: confirm "Hazakura" or one of the listed alternates.
