@@ -74,7 +74,7 @@ namespace Kagemura.UI
             yield return new MenuItem("Resume", Close);
 
             if (settings != null)
-                yield return new MenuItem("Controls", () => settings.Open());
+                yield return new MenuItem("Controls", () => { settings.Open(); Close();});
 
             yield return new MenuItem("Restart", () => { ReleasePause(); SceneRoutes.Reload(); });
             yield return new MenuItem("Quit to Menu",
