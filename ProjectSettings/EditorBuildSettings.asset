@@ -7,7 +7,22 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Main Menu.unity
-    guid: 568fb41c1198a764ca01bdbad60bf653
+    guid: 0bbcf19f4912d6a4abe6a9391b55cd78
+  - enabled: 1
+    path: Assets/Scenes/Level 01 Spring.unity
+    guid: d5ebbdcfc3c1ac94082292d1e96e52c8
+  - enabled: 1
+    path: Assets/Scenes/Level 02 Summer.unity
+    guid: 74cd9ec073ce2da46b485e047d4a99da
+  - enabled: 1
+    path: Assets/Scenes/Level 03 Autumn.unity
+    guid: 9a15923cbb933244ebbea47207b209ce
+  - enabled: 1
+    path: Assets/Scenes/Level 04 Winter.unity
+    guid: d1b93f8e26d05dc45bae3ac4b3bd0818
+  - enabled: 1
+    path: Assets/Scenes/Boss Arena.unity
+    guid: 4ba1c9c8ff4ec094cad58dd45324bb0e
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 6284f75430ac7cc4a98f79c626be29c5

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Kagemura.LevelTools;
 using Kagemura.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -200,28 +201,48 @@ namespace Kagemura.DevTools
         }
 
         /// <summary>
-        /// Replace the Build Settings scene list with the two real scenes, title screen first.
+        /// Replace the Build Settings scene list with every real scene, title screen first, then
+        /// the levels in play order, then the greybox combat scene last.
         ///
-        /// Order is the whole point: a build boots into index 0, so MainMenu has to lead. This
-        /// also drops the URP template's SampleScene from the list, which is currently the only
-        /// entry — it is not deleted, just no longer shipped.
+        /// Order is the whole point: a build boots into index 0, so the title screen has to lead.
+        /// Everything else is loaded by name, so its order is only for reading — except that being
+        /// in the list at all is what makes a scene loadable, which is why the level exits break
+        /// the moment a level is built and this is not re-run.
+        ///
+        /// Game.unity stays registered and stays last. It is the scene combat is tuned in and the
+        /// one the dev spawn menu is aimed at, so being able to build and run it directly is worth
+        /// the entry; nothing routes to it any more.
+        ///
+        /// This also drops the URP template's SampleScene, which was the only entry before the
+        /// menus were wired — not deleted, just no longer shipped.
         /// </summary>
         [MenuItem("Kagemura/Setup/3. Register the Scenes in Build Settings")]
         public static void RegisterScenesInBuildSettings()
         {
-            var scenes = new List<EditorBuildSettingsScene>();
+            var paths = new List<string> { MainMenuScenePath };
 
-            foreach (string path in new[] { MainMenuScenePath, GameScenePath })
+            foreach (string levelScene in LevelSceneSetup.LevelSceneNames)
+                paths.Add(LevelSceneSetup.ScenePathFor(levelScene));
+
+            paths.Add(GameScenePath);
+
+            var scenes = new List<EditorBuildSettingsScene>();
+            var missing = new List<string>();
+
+            foreach (string path in paths)
             {
                 if (File.Exists(path)) scenes.Add(new EditorBuildSettingsScene(path, true));
-                else Debug.LogWarning($"[MenuSceneSetup] {path} does not exist yet, so it was not " +
-                                      "registered. Run step 1 first.");
+                else missing.Add(Path.GetFileNameWithoutExtension(path));
             }
 
             EditorBuildSettings.scenes = scenes.ToArray();
 
             Debug.Log($"[MenuSceneSetup] Build Settings now lists {scenes.Count} scene(s), " +
                       "starting with the title screen.");
+
+            if (missing.Count > 0)
+                Debug.LogWarning($"[MenuSceneSetup] Not registered, because they do not exist yet: " +
+                                 $"{string.Join(", ", missing)}. Run steps 1, 4 and 5 first.");
         }
 
         private static bool AddIfMissing<T>(string objectName) where T : MonoBehaviour

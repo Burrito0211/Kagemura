@@ -138,6 +138,23 @@ namespace Kagemura.Systems
             if (_current <= 0) Die();
         }
 
+        /// <summary>
+        /// Kill outright, ignoring i-frames, armour, knockback and the hit flash.
+        ///
+        /// Separate from a very large <see cref="TakeDamage"/> because this is not an attack and
+        /// must not be survivable: falling out of the level during a dodge would otherwise be
+        /// waved off by the dodge's i-frames, leaving the player alive and falling forever, which
+        /// reads as the game hanging.
+        /// </summary>
+        public void Kill()
+        {
+            if (!IsAlive) return;
+
+            _current = 0;
+            OnHealthChanged?.Invoke(_current, maxHealth);
+            Die();
+        }
+
         public void Heal(int amount)
         {
             if (!IsAlive) return;

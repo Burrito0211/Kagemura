@@ -80,6 +80,28 @@ Both specials share one resource pool (e.g., "Focus") to avoid building two sepa
 - Levels are handcrafted, not procedural. Each season introduces or re-contextualizes one enemy type or environmental hazard rather than everything at once — e.g. Spring (cherry blossoms, first yokai encounters), Summer (rain/storm hazards, second enemy type), Autumn (falling leaves, environmental traps), Winter (snow, reduced visibility, leads into boss).
 - Seasonal palette shifts handle most of the "visual variety" workload without requiring new art categories per level.
 
+**Greybox pass — done 2026-08-01 (Build Order step 9, first half).** Five scenes exist: the four
+seasons plus the arena, linked end to end, Start button to boss. What each season introduces was
+settled as **enemy types, not hazards**:
+
+| Level | Introduces | Terrain |
+|---|---|---|
+| Spring | Rusher only | Flat, wide gaps — movement and the sword |
+| Summer | Ranged, on perches | Vertical, climbable |
+| Autumn | Shielded | Narrow platforms over pits |
+| Winter | All three together | Mixed, leads into the arena |
+
+Three enemy types across four seasons is exactly enough to introduce one at a time and then
+combine them, so no environmental hazard was built. §3.1 offers "one enemy type **or** one hazard"
+per season and the types alone cover all four — a hazard would have meant a new system built for
+greybox, which §8 exists to prevent. If a season later needs something the enemy roster can't
+give it, the hazard is the thing to add, and it comes out of the same budget as everything else.
+
+Layouts, palettes and enemy placement live in `LevelData` assets and are baked into scenes by
+`Kagemura/Setup/5`, so retuning a level means editing one asset and rebuilding rather than
+dragging colliders. That arrangement is for greybox only — at the art pass the scenes get
+hand-dressed and stop being regenerated.
+
 ### 3.2 Story
 
 > **STATUS — DEFERRED 2026-07-31. Do not pick this up unless explicitly asked.**
@@ -248,7 +270,7 @@ Notes:
 6. **Bow weapon** — aiming/projectile logic, resource cost.
 7. **Specials (2)** — offensive burst, then mobility.
 8. **Enemy types A and B**, then optional C.
-9. **Level greybox → art pass**, level by level.
+9. **Level greybox → art pass**, level by level. — **Greybox done 2026-08-01** (four seasons + arena, playable start to boss; see §3.1). **Art pass outstanding** and blocked on the sprite-medium question in §9 — there is no 2D art to pass with yet.
 10. **3D background layer system.**
 11. **Boss fight (2 phases).**
 12. ~~**Story/dialogue integration.**~~ — **DEFERRED 2026-07-31, skip this step.** System is built; content is unwritten and blocked on §9's motivation question. Full note in §3.2.

@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df224abb4374b0549a5fec18ac7a3164, type: 3}
+  m_Name: Level 04 Winter
+  m_EditorClassIdentifier: Assembly-CSharp::Kagemura.Levels.LevelData
+  displayName: "Winter \u2014 The Watching Blade"
+  season: 3
+  skyColor: {r: 0.74, g: 0.82, b: 0.9, a: 1}
+  groundColor: {r: 0.2, g: 0.24, b: 0.32, a: 1}
+  accentColor: {r: 0.92, g: 0.96, b: 1, a: 1}
+  ambientLight: {r: 0.86, g: 0.92, b: 1, a: 1}
+  playerStart: {x: 0, y: -1.5}
+  slabs:
+  - startX: -6
+    endX: 24
+    topY: -3
+    thickness: 1
+  - startX: 30
+    endX: 46
+    topY: -2
+    thickness: 1
+  - startX: 52
+    endX: 66
+    topY: 0
+    thickness: 1
+  - startX: 72
+    endX: 96
+    topY: -3
+    thickness: 1
+  - startX: 102
+    endX: 118
+    topY: -1
+    thickness: 1
+  - startX: 124
+    endX: 152
+    topY: -3
+    thickness: 1
+  enemies:
+  - data: {fileID: 11400000, guid: b1c6e3b661a19334ca70ad20860178fe, type: 2}
+    kind: 0
+    position: {x: 16, y: -1.5}
+  - data: {fileID: 11400000, guid: 7f3a92c4d5e81b642a90c7f31e04b58d, type: 2}
+    kind: 1
+    position: {x: 38, y: -0.5}
+  - data: {fileID: 11400000, guid: 3b81d54ac9e27f6489a20e1c5d73f04a, type: 2}
+    kind: 2
+    position: {x: 58, y: 1.5}
+  - data: {fileID: 11400000, guid: b1c6e3b661a19334ca70ad20860178fe, type: 2}
+    kind: 0
+    position: {x: 80, y: -1.5}
+  - data: {fileID: 11400000, guid: 7f3a92c4d5e81b642a90c7f31e04b58d, type: 2}
+    kind: 1
+    position: {x: 90, y: -1.5}
+  - data: {fileID: 11400000, guid: 3b81d54ac9e27f6489a20e1c5d73f04a, type: 2}
+    kind: 2
+    position: {x: 110, y: 0.5}
+  - data: {fileID: 11400000, guid: b1c6e3b661a19334ca70ad20860178fe, type: 2}
+    kind: 0
+    position: {x: 132, y: -1.5}
+  - data: {fileID: 11400000, guid: 3b81d54ac9e27f6489a20e1c5d73f04a, type: 2}
+    kind: 2
+    position: {x: 142, y: -1.5}
+  exitPosition: {x: 148, y: -1.5}
+  nextScene: Boss Arena
+  killPlaneY: -20

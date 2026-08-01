@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df224abb4374b0549a5fec18ac7a3164, type: 3}
+  m_Name: Level 03 Autumn
+  m_EditorClassIdentifier: Assembly-CSharp::Kagemura.Levels.LevelData
+  displayName: "Autumn \u2014 Falling Leaves"
+  season: 2
+  skyColor: {r: 0.85, g: 0.45, b: 0.22, a: 1}
+  groundColor: {r: 0.34, g: 0.19, b: 0.14, a: 1}
+  accentColor: {r: 0.9, g: 0.3, b: 0.2, a: 1}
+  ambientLight: {r: 1, g: 0.86, b: 0.72, a: 1}
+  playerStart: {x: 0, y: -1.5}
+  slabs:
+  - startX: -6
+    endX: 18
+    topY: -3
+    thickness: 1
+  - startX: 24
+    endX: 34
+    topY: -3
+    thickness: 1
+  - startX: 40
+    endX: 50
+    topY: -1
+    thickness: 1
+  - startX: 56
+    endX: 64
+    topY: -3
+    thickness: 1
+  - startX: 70
+    endX: 92
+    topY: -3
+    thickness: 1
+  - startX: 98
+    endX: 110
+    topY: 0
+    thickness: 1
+  - startX: 116
+    endX: 140
+    topY: -3
+    thickness: 1
+  enemies:
+  - data: {fileID: 11400000, guid: 3b81d54ac9e27f6489a20e1c5d73f04a, type: 2}
+    kind: 2
+    position: {x: 12, y: -1.5}
+  - data: {fileID: 11400000, guid: b1c6e3b661a19334ca70ad20860178fe, type: 2}
+    kind: 0
+    position: {x: 29, y: -1.5}
+  - data: {fileID: 11400000, guid: 7f3a92c4d5e81b642a90c7f31e04b58d, type: 2}
+    kind: 1
+    position: {x: 45, y: 0.5}
+  - data: {fileID: 11400000, guid: 3b81d54ac9e27f6489a20e1c5d73f04a, type: 2}
+    kind: 2
+    position: {x: 78, y: -1.5}
+  - data: {fileID: 11400000, guid: b1c6e3b661a19334ca70ad20860178fe, type: 2}
+    kind: 0
+    position: {x: 86, y: -1.5}
+  - data: {fileID: 11400000, guid: 7f3a92c4d5e81b642a90c7f31e04b58d, type: 2}
+    kind: 1
+    position: {x: 104, y: 1.5}
+  - data: {fileID: 11400000, guid: 3b81d54ac9e27f6489a20e1c5d73f04a, type: 2}
+    kind: 2
+    position: {x: 130, y: -1.5}
+  exitPosition: {x: 136, y: -1.5}
+  nextScene: Level 04 Winter
+  killPlaneY: -20

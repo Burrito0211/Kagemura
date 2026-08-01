@@ -20,7 +20,11 @@ namespace Kagemura.UI
         // Must match the scene file's name exactly, spaces included — SceneManager matches on the
         // name, so renaming the asset silently kills every "Quit to Menu" button in the game.
         public const string DefaultMainMenu = "Main Menu";
-        public const string DefaultFirstLevel = "Game";
+
+        // Where Start goes. Was "Game", the greybox combat test scene, for as long as that was the
+        // only playable scene there was; it is now the first real level (Build Order step 9). Game
+        // still exists and is still where combat gets tuned — it is just no longer the game.
+        public const string DefaultFirstLevel = "Level 01 Spring";
 
         public static void Load(string sceneName)
         {
