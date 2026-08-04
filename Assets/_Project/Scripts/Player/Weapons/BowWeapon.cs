@@ -38,9 +38,19 @@ namespace Kagemura.Player.Weapons
         private float _drawStartTime;
         private bool _tinted;
 
+        /// <summary>
+        /// Seconds of draw for a full-power shot, after the seasonal edge (spec §2.6).
+        ///
+        /// Summer spends its edge here rather than on damage. The bow already hits hardest, so
+        /// more damage would just make it the answer to everything; a shorter draw instead buys
+        /// back the thing the bow actually pays — time stood still while something closes on you.
+        /// Summer is the level with archers on perches, and that is the season it matters in.
+        /// </summary>
+        private float FullDrawTime => Mathf.Max(0.01f, data.fullDrawTime / Edge);
+
         /// <summary>0..1 draw progress. Read by the HUD or a charge VFX later.</summary>
         public float DrawProgress => _drawing && data != null
-            ? Mathf.Clamp01((Time.time - _drawStartTime) / Mathf.Max(0.01f, data.fullDrawTime))
+            ? Mathf.Clamp01((Time.time - _drawStartTime) / FullDrawTime)
             : 0f;
 
         private void Awake()

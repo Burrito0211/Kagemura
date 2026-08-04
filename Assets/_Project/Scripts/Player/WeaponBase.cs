@@ -44,6 +44,36 @@ namespace Kagemura.Player
         public WeaponData Data => data;
         public bool CanAttack => data != null && Time.time >= _lastAttackTime + data.attackCooldown;
 
+        private float _edge = 1f;
+
+        /// <summary>
+        /// The seasonal edge (spec §2.6), as a multiplier. 1 = unsharpened.
+        ///
+        /// Deliberately not a damage number. Each weapon spends this on the thing that makes it
+        /// itself — the sword's finisher, the sickle's bleed, the bow's draw — because a flat
+        /// damage multiplier is close to worthless on the sickle, where the bleed does the work,
+        /// and overwhelming on the bow, which already hits hardest. Subclasses read this where it
+        /// belongs for them.
+        /// </summary>
+        public float Edge => _edge;
+
+        /// <summary>True while a season is sharpening this weapon. Read by the HUD.</summary>
+        public bool IsSharpened => _edge > 1.0001f;
+
+        /// <summary>
+        /// Sharpen this weapon for as long as the level lasts.
+        ///
+        /// A runtime field, and never a write into <see cref="data"/>. WeaponData is a
+        /// ScriptableObject: edits to it persist in the editor and survive play sessions, so a
+        /// spring bonus written there would still be on the blade in winter, and still there
+        /// tomorrow morning. That failure is invisible — the weapon simply gets better and stays
+        /// better — which is why the rule is in the spec rather than only here.
+        ///
+        /// Clamped at 1: this system exists to sharpen, and a season quietly dulling a weapon
+        /// would be a much bigger design decision than a mis-typed field should be able to make.
+        /// </summary>
+        public void SetEdge(float multiplier) => _edge = Mathf.Max(1f, multiplier);
+
         /// <summary>Called by PlayerCombat on attack input. Respects cooldown, then swings.</summary>
         public void TryAttack(int facing)
         {

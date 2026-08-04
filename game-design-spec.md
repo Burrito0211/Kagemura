@@ -75,7 +75,9 @@ Both specials share one resource pool (e.g., "Focus") to avoid building two sepa
 
 ### 2.6 Seasonal Weapon Edge
 
-> **STATUS — DESIGNED 2026-08-02, NOT BUILT.** Slots into Build Order as step 13.5.
+> **STATUS — BUILT 2026-08-04 (Build Order step 13.5).** Live in all five level scenes.
+> Unplayed: the +20% opening value has not been through a playtest, and rule 1 below is the
+> thing that playtest exists to check.
 
 **Each season sharpens one weapon.** The blade answers the season it is carried through — a
 flavour hook (§1.1) that also gives the four levels a mechanical identity, not just a palette.
@@ -113,8 +115,17 @@ feature rather than a hole to patch.
    editor and leak between play sessions, so a spring bonus applied that way is still there in
    winter and still there tomorrow. It has to be a runtime multiplier layered over the data.
 
-Not a §8 violation: this adds no weapon, special, enemy or boss. It is one field on `LevelData`,
-one multiplier in `WeaponBase`, and one HUD marker.
+Not a §8 violation: this adds no weapon, special, enemy or boss. It is two fields on `LevelData`,
+a runtime multiplier on `WeaponBase` that each weapon spends its own way, one `SeasonalEdge`
+component per level scene, and a marker plus a level-start banner on the HUD.
+
+**As built:** the edge is a single multiplier (`WeaponBase.SetEdge`, clamped at 1 so a mistyped
+field cannot dull a weapon), never written into `WeaponData`. Spring puts it on the sword's
+finisher only, so it rewards committing to the full combo rather than poking; summer shortens the
+bow's draw rather than raising its damage, buying back the time the bow actually costs; autumn
+makes the sickle's bleed tick faster and last longer, rewarding staying in range to keep stacks
+alive. `SeasonalEdge` is the only thing at runtime that reads a `LevelData` — everything else in a
+level is baked geometry.
 
 ---
 
@@ -320,10 +331,10 @@ Notes:
 11. **Boss fight (2 phases).**
 12. ~~**Story/dialogue integration.**~~ — **DEFERRED 2026-07-31, skip this step.** System is built; content is unwritten and blocked on §9's motivation question. Full note in §3.2.
 13. **UI/menus (main menu, pause, game over, win screen).**
-13.5. **Seasonal weapon edge (§2.6).** After the HUD exists, because the buff has to be visible to
-    mean anything, and before the playtest, because "did you notice which weapon was sharpened,
-    and did you switch anyway?" is the question that tells you whether it works. Small: one field
-    on `LevelData`, one multiplier in `WeaponBase`, one HUD marker.
+13.5. **Seasonal weapon edge (§2.6).** — **DONE 2026-08-04.** Fitted into the five existing level
+    scenes rather than rebuilt into them (`Kagemura/Setup/6`), so no greybox layout was lost.
+    Still needs the playtest question answered: did you notice which weapon was sharpened, and did
+    you switch anyway?
 14. **Playtesting pass (4–5 people, start to finish).**
 15. **Polish:** juice (hit-stop, screen shake, particles), audio, bug fixing.
 16. **Build export + buffer.**

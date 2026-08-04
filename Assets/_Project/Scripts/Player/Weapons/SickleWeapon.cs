@@ -31,8 +31,14 @@ namespace Kagemura.Player.Weapons
         {
             if (!data.appliesBleed) return;
 
-            Bleed.ApplyStack(victim.gameObject, data.bleedDamagePerStack, data.bleedTickInterval,
-                             data.bleedDuration, data.bleedMaxStacks, gameObject);
+            // Autumn's edge (spec §2.6) is spent on the bleed, not on the swing. Per-hit damage is
+            // low by design and raising it would only make the sickle a worse sword; making the
+            // curse tick faster and hang on longer rewards exactly what the weapon asks for —
+            // staying inside the enemy's range long enough to keep the stacks alive.
+            Bleed.ApplyStack(victim.gameObject, data.bleedDamagePerStack,
+                             data.bleedTickInterval / Edge,
+                             data.bleedDuration * Edge,
+                             data.bleedMaxStacks, gameObject);
         }
     }
 }

@@ -62,11 +62,12 @@ namespace Kagemura.LevelTools
         /// Data, then scenes, then Build Settings — the order they depend on each other in. The one
         /// command to run after pulling this branch, and the one to re-run after tuning a level.
         /// </summary>
-        [MenuItem("Kagemura/Setup/Build the Whole Game Flow (steps 4, 5, then 3)")]
+        [MenuItem("Kagemura/Setup/Build the Whole Game Flow (steps 4, 5, 6, then 3)")]
         public static void BuildEverything()
         {
             CreateLevelDataAssets();
             BuildLevelScenes();
+            FitSeasonalEdge();
             Kagemura.DevTools.MenuSceneSetup.RegisterScenesInBuildSettings();
         }
 
@@ -216,6 +217,7 @@ namespace Kagemura.LevelTools
             BuildKillPlane(scene, data);
             PlacePlayer(scene, data);
             ApplyPalette(scene, data);
+            AddSeasonalEdge(scene, data);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -406,6 +408,89 @@ namespace Kagemura.LevelTools
 
             var light = FindInScene<Light2D>(scene);
             if (light != null) light.color = data.ambientLight;
+        }
+
+        /// <summary>
+        /// Put the season's weapon edge in the scene (spec §2.6), pointed at this level's data.
+        ///
+        /// The only runtime link from a scene back to its LevelData. Everything else a level has
+        /// is baked geometry, but the edge is a number applied to the player's weapons, so
+        /// something in the scene has to carry it.
+        ///
+        /// Adds or updates — never duplicates — so it is safe on a scene that already has one.
+        /// That is what lets the existing level scenes be retrofitted rather than rebuilt.
+        /// </summary>
+        private static void AddSeasonalEdge(Scene scene, LevelData data)
+        {
+            var edge = FindInScene<SeasonalEdge>(scene);
+
+            if (edge == null)
+            {
+                var go = NewRoot("Seasonal Edge", scene);
+                edge = go.AddComponent<SeasonalEdge>();
+            }
+
+            edge.SetLevel(data);
+            EditorUtility.SetDirty(edge);
+        }
+
+        // ---------------------------------------------------------- step 6: the seasonal edge
+
+        /// <summary>
+        /// Fit the seasonal weapon edge (spec §2.6) to level scenes that already exist, without
+        /// rebuilding them.
+        ///
+        /// Separate from step 5 on purpose. Step 5 replaces a scene outright, which is fine while
+        /// a level is nothing but generated greybox and stops being fine the moment anything in
+        /// one is hand-placed. This opens each scene, changes the one thing, and saves — so it
+        /// stays safe to run after the art pass has started, when step 5 no longer is.
+        ///
+        /// Also writes the season-to-weapon mapping onto the LevelData assets, since assets
+        /// created before §2.6 existed have the field at its default of None.
+        /// </summary>
+        [MenuItem("Kagemura/Setup/6. Fit the Seasonal Weapon Edge to the Existing Scenes")]
+        public static void FitSeasonalEdge()
+        {
+            int assetsSet = 0, scenesFitted = 0;
+
+            foreach (string sceneName in LevelSceneNames)
+            {
+                var data = AssetDatabase.LoadAssetAtPath<LevelData>(DataPathFor(sceneName));
+
+                if (data == null)
+                {
+                    Debug.LogWarning($"[LevelSceneSetup] No level asset for '{sceneName}'. Run " +
+                                     "step 4 first.");
+                    continue;
+                }
+
+                data.sharpenedWeapon = EdgeFor(data.season);
+                data.edgeMultiplier = DefaultEdgeMultiplier;
+                EditorUtility.SetDirty(data);
+                assetsSet++;
+
+                string scenePath = ScenePathFor(sceneName);
+                if (!File.Exists(scenePath))
+                {
+                    Debug.LogWarning($"[LevelSceneSetup] {scenePath} does not exist yet, so the " +
+                                     "edge was written to the asset but not into a scene. Run " +
+                                     "step 5.");
+                    continue;
+                }
+
+                var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+                AddSeasonalEdge(scene, data);
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                EditorSceneManager.CloseScene(scene, removeScene: true);
+                scenesFitted++;
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            Debug.Log($"[LevelSceneSetup] Seasonal edge written to {assetsSet} level asset(s) and " +
+                      $"fitted into {scenesFitted} existing scene(s). No scene was rebuilt.");
         }
 
         // ------------------------------------------------------------------------- scene helpers
@@ -635,12 +720,32 @@ namespace Kagemura.LevelTools
             yield return arena;
         }
 
+        /// <summary>Opening value for the edge (spec §2.6). A nudge; playtesting moves it.</summary>
+        private const float DefaultEdgeMultiplier = 1.2f;
+
+        /// <summary>
+        /// Which weapon a season sharpens (spec §2.6). The one place this mapping is written —
+        /// both the level defaults and the retrofit read it here, so the two cannot disagree.
+        ///
+        /// Winter and the arena return None, and that is the design rather than a gap: there are
+        /// three weapons and four seasons, and winter is where the game stops helping.
+        /// </summary>
+        private static SharpenedWeapon EdgeFor(Season season) => season switch
+        {
+            Season.Spring => SharpenedWeapon.Sword,     // the season you learn it in
+            Season.Summer => SharpenedWeapon.Bow,       // archers on perches; range duels range
+            Season.Autumn => SharpenedWeapon.Sickle,    // narrow ledges force close quarters
+            _ => SharpenedWeapon.None
+        };
+
         private static LevelData New(string assetName, string displayName, Season season)
         {
             var data = ScriptableObject.CreateInstance<LevelData>();
             data.name = assetName;
             data.displayName = displayName;
             data.season = season;
+            data.sharpenedWeapon = EdgeFor(season);
+            data.edgeMultiplier = DefaultEdgeMultiplier;
             return data;
         }
 

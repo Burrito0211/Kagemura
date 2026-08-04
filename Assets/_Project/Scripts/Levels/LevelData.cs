@@ -8,6 +8,16 @@ namespace Kagemura.Levels
     public enum Season { Spring, Summer, Autumn, Winter, BossArena }
 
     /// <summary>
+    /// Which weapon this season sharpens (spec §2.6). Named rather than pointed at a WeaponData
+    /// asset: the edge belongs to a weapon's identity, not to a particular stats asset, and an
+    /// enum cannot be mis-wired to the wrong one.
+    ///
+    /// <see cref="None"/> is a real answer, not a blank. There are three weapons and four seasons,
+    /// and winter deliberately sharpens nothing — see §2.6.
+    /// </summary>
+    public enum SharpenedWeapon { None, Sword, Sickle, Bow }
+
+    /// <summary>
     /// Build Order step 9: one level, described as data.
     ///
     /// The levels are handcrafted, not procedural (spec §3.1) — this is where the handcrafting
@@ -76,6 +86,16 @@ namespace Kagemura.Levels
         public Color accentColor = new Color(0.95f, 0.55f, 0.65f);
         [Tooltip("Global 2D light colour — how warm or cold the whole level reads.")]
         public Color ambientLight = Color.white;
+
+        [Header("Seasonal Edge (spec §2.6)")]
+        [Tooltip("Which weapon this season sharpens. Winter and the arena sharpen nothing.")]
+        public SharpenedWeapon sharpenedWeapon = SharpenedWeapon.None;
+
+        [Tooltip("How much sharper. This is a nudge, not a mandate — if the sharpened weapon " +
+                 "becomes strictly correct, the level collapses to one weapon and the three " +
+                 "playstyles of §2.2 stop mattering. The question a playtest has to answer is " +
+                 "not 'does it feel strong' but 'did you still switch weapons in this level'.")]
+        [Range(1f, 2f)] public float edgeMultiplier = 1.2f;
 
         [Header("Layout")]
         public Vector2 playerStart = new Vector2(2f, -1f);

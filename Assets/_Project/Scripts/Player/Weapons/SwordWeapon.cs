@@ -19,14 +19,20 @@ namespace Kagemura.Player.Weapons
                 _comboStep = 0;
 
             bool isFinisher = _comboStep >= data.comboMaxHits - 1;
+
+            // Spring's edge (spec §2.6) lands on the finisher alone, not on every swing. Spreading
+            // it across both hits would just be "the sword does more damage"; putting it on the
+            // second makes the season reward the thing the sword is actually about — committing to
+            // the full combo instead of poking and backing off.
             int damage = isFinisher
-                ? Mathf.RoundToInt(data.damage * data.finisherDamageMultiplier)
+                ? Mathf.RoundToInt(data.damage * data.finisherDamageMultiplier * Edge)
                 : data.damage;
 
             int hits = PerformHit(facing, damage, out _);
 
             Debug.Log($"[Sword] swing {_comboStep + 1}/{data.comboMaxHits}" +
-                      $"{(isFinisher ? " (finisher)" : "")} dmg={damage} hits={hits}");
+                      $"{(isFinisher ? " (finisher)" : "")}{(IsSharpened ? " (sharpened)" : "")} " +
+                      $"dmg={damage} hits={hits}");
 
             _prevSwingTime = Time.time;
             _comboStep = isFinisher ? 0 : _comboStep + 1;

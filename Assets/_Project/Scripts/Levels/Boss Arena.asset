@@ -18,6 +18,8 @@ MonoBehaviour:
   groundColor: {r: 0.11, g: 0.11, b: 0.15, a: 1}
   accentColor: {r: 0.85, g: 0.2, b: 0.3, a: 1}
   ambientLight: {r: 0.62, g: 0.66, b: 0.8, a: 1}
+  sharpenedWeapon: 0
+  edgeMultiplier: 1.2
   playerStart: {x: -16, y: -1.5}
   slabs:
   - startX: -24

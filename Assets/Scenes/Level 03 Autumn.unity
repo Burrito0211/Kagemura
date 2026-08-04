@@ -2205,7 +2205,9 @@ MonoBehaviour:
   healthTrail: {fileID: 0}
   healthLabel: {fileID: 0}
   weaponLabel: {fileID: 0}
+  seasonLabel: {fileID: 0}
   weaponLabelPrefix: 'weapon: '
+  sharpenedSuffix: "  \u25C6 sharpened"
   focusPipHeight: 16
   focusPipSpacing: 5
   trailDelay: 0.25
@@ -3435,6 +3437,52 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1794991616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1794991618}
+  - component: {fileID: 1794991617}
+  m_Layer: 0
+  m_Name: Seasonal Edge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1794991617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794991616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5323fe4476b63014faf0351e5a1cef0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kagemura.Levels.SeasonalEdge
+  level: {fileID: 11400000, guid: 84bdb2b8e9a3f704b881b76bbdf6ef4f, type: 2}
+  bannerSeconds: 3.5
+--- !u!4 &1794991618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794991616}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1817351484
 GameObject:
   m_ObjectHideFlags: 0
@@ -4163,3 +4211,4 @@ SceneRoots:
   - {fileID: 1071166957}
   - {fileID: 117349513}
   - {fileID: 1831119233}
+  - {fileID: 1794991618}

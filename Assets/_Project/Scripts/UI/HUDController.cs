@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Kagemura.Player;
 using Kagemura.Systems;
@@ -49,9 +50,15 @@ namespace Kagemura.UI
         [Tooltip("Name of the equipped weapon.")]
         [SerializeField] private Text weaponLabel;
 
+        [Tooltip("Season banner shown briefly at level start.")]
+        [SerializeField] private Text seasonLabel;
+
         [Header("Weapon Readout")]
         [Tooltip("Text in front of the weapon name.")]
         [SerializeField] private string weaponLabelPrefix = "weapon: ";
+        [Tooltip("Appended to the weapon name while this season sharpens it (spec §2.6). This " +
+                 "is the permanent half of telling the player — the banner only shows once.")]
+        [SerializeField] private string sharpenedSuffix = "  ◆ sharpened";
 
         [Header("Focus Meter")]
         [Tooltip("Height of the Focus pips. Taller than the old bar — they're meant to be " +
@@ -94,6 +101,13 @@ namespace Kagemura.UI
         private float _partialCharge;
         private bool _focusFull;
         private float _focusDenyUntil;
+
+        // The season's accent, and the weapon line's normal colour to put back when the equipped
+        // weapon is not the sharpened one. Defaults leave the readout exactly as it was before
+        // §2.6 existed, so a scene with no SeasonalEdge in it — Game.unity — looks untouched.
+        private Color _seasonAccent = Color.white;
+        private Color _weaponLabelColor = Color.white;
+        private Coroutine _bannerRoutine;
 
         private void Awake()
         {
@@ -247,7 +261,46 @@ namespace Kagemura.UI
 
         private void HandleWeaponChanged(WeaponBase weapon)
         {
-            if (weaponLabel != null) weaponLabel.text = weaponLabelPrefix + WeaponName(weapon);
+            if (weaponLabel == null) return;
+
+            // The marker rides on the weapon line rather than living somewhere of its own,
+            // because the question it answers — "is the thing in my hands the sharpened one?" —
+            // is the same question the readout already exists to answer.
+            bool sharpened = weapon != null && weapon.IsSharpened;
+
+            weaponLabel.text = weaponLabelPrefix + WeaponName(weapon)
+                             + (sharpened ? sharpenedSuffix : string.Empty);
+
+            weaponLabel.color = sharpened ? _seasonAccent : _weaponLabelColor;
+        }
+
+        /// <summary>
+        /// Announce the season and its edge for a few seconds (spec §2.6). Called by SeasonalEdge
+        /// at level start; the HUD owns the label but knows nothing about seasons itself.
+        /// </summary>
+        public void ShowSeasonBanner(string text, Color accent, float seconds)
+        {
+            _seasonAccent = accent;
+
+            // Re-runs the weapon line, so the accent colour reaches a readout that was already
+            // written before the season was known.
+            if (playerCombat != null) HandleWeaponChanged(playerCombat.CurrentWeapon);
+
+            if (seasonLabel == null) return;
+
+            seasonLabel.text = text;
+            seasonLabel.color = accent;
+
+            if (_bannerRoutine != null) StopCoroutine(_bannerRoutine);
+            _bannerRoutine = StartCoroutine(HideBannerAfter(seconds));
+        }
+
+        private IEnumerator HideBannerAfter(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+
+            if (seasonLabel != null) seasonLabel.text = string.Empty;
+            _bannerRoutine = null;
         }
 
         private static string WeaponName(WeaponBase weapon)
@@ -310,6 +363,13 @@ namespace Kagemura.UI
 
             weaponLabel = CreateLabel(_root, "Weapon Label", 16, TextAnchor.MiddleLeft,
                 Vector2.zero, new Vector2(barSize.x, 22f));
+            _weaponLabelColor = weaponLabel.color;
+
+            // Wider than the strip and empty until a season fills it in. Sits under the weapon
+            // line so the banner and the marker it points at are in the same glance.
+            seasonLabel = CreateLabel(_root, "Season Label", 15, TextAnchor.MiddleLeft,
+                Vector2.zero, new Vector2(barSize.x * 1.6f, 22f));
+            seasonLabel.text = string.Empty;
 
             ApplyLayout();
         }
@@ -383,13 +443,15 @@ namespace Kagemura.UI
                 _ => new Vector2(0f, 1f)
             };
 
-            // Stacked top to bottom: health, then Focus, then the weapon line. Each row's Y is
-            // derived from the one above, so changing barSize or focusPipHeight can't overlap them.
+            // Stacked top to bottom: health, then Focus, then the weapon line, then the season
+            // banner. Each row's Y is derived from the one above, so changing barSize or
+            // focusPipHeight can't overlap them.
             float focusY = -(barSize.y + 6f);
             float weaponY = focusY - (focusPipHeight + 6f);
+            float seasonY = weaponY - 22f;
 
             _root.anchorMin = _root.anchorMax = _root.pivot = anchor;
-            _root.sizeDelta = new Vector2(barSize.x, -weaponY + 22f);
+            _root.sizeDelta = new Vector2(barSize.x, -seasonY + 22f);
             _root.anchoredPosition = new Vector2(
                 anchor.x > 0.5f ? -screenOffset.x : screenOffset.x,
                 anchor.y > 0.5f ? -screenOffset.y : screenOffset.y);
@@ -420,6 +482,9 @@ namespace Kagemura.UI
 
             if (weaponLabel != null)
                 ((RectTransform)weaponLabel.transform).anchoredPosition = new Vector2(0f, weaponY);
+
+            if (seasonLabel != null)
+                ((RectTransform)seasonLabel.transform).anchoredPosition = new Vector2(0f, seasonY);
         }
 
 #if UNITY_EDITOR
