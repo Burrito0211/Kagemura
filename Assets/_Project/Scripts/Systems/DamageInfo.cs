@@ -21,5 +21,12 @@ namespace Kagemura.Systems
         /// entirely, which would make the sickle a stun-lock rather than a damage choice.
         /// </summary>
         public bool IgnoresStagger;
+
+        /// <summary>
+        /// Seconds of hit-stop this hit asks for when it lands, from the attack's own stats
+        /// asset. Zero for anything that isn't a blow (bleed ticks). Health doesn't act on it;
+        /// it rides along for whatever is listening (Feel.CombatFeel).
+        /// </summary>
+        public float HitStop;
     }
 }

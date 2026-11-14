@@ -336,7 +336,14 @@ Notes:
     Still needs the playtest question answered: did you notice which weapon was sharpened, and did
     you switch anyway?
 14. **Playtesting pass (4–5 people, start to finish).**
-15. **Polish:** juice (hit-stop, screen shake, particles), audio, bug fixing.
+15. **Polish:** juice (hit-stop, screen shake, particles), audio, bug fixing. — **Juice done 2026-11-14**,
+    ahead of the step 14 playtest rather than after it. One self-installing listener
+    (`Scripts/Feel/CombatFeel.cs`) drives all three from Health's events; every global number is
+    on `Scripts/Feel/Resources/FeelSettings.asset`, and per-attack hit-stop stays on
+    WeaponData / SpecialData. The sparks are greybox squares, replaced at the art pass.
+    **Not compiled or played** — written without a Unity editor, so the first job is opening the
+    project and tuning by feel. **Audio outstanding**: there are no sound assets in the project yet.
+    Bug fixing waits on what the playtest finds.
 16. **Build export + buffer.**
 
 ---

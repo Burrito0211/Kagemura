@@ -70,8 +70,10 @@ namespace Kagemura.Player.Weapons
         [Tooltip("Top speed multiplier while drawing. Low values root the player in place.")]
         [Range(0f, 1f)] public float drawMoveSpeedMultiplier = 0.45f;
 
-        [Header("Juice (used later)")]
-        [Tooltip("Hit-stop duration on a successful hit. Wired up during the polish pass.")]
+        [Header("Juice")]
+        [Tooltip("Seconds the game freezes when a hit lands. Also sets how hard the camera " +
+                 "shakes (Feel Settings > trauma per second of hit-stop). Keep it small on " +
+                 "fast weapons — it is paid on every hit.")]
         public float hitStopDuration = 0.05f;
     }
 }

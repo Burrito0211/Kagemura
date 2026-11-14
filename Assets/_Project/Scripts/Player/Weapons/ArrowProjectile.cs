@@ -28,6 +28,9 @@ namespace Kagemura.Player.Weapons
         /// </summary>
         public int FocusOnHit { get; set; }
 
+        /// <summary>Hit-stop the arrow asks for when it lands. Set by BowWeapon before Launch.</summary>
+        public float HitStop { get; set; }
+
         /// <summary>Set everything the arrow needs, then let it fly. Called right after spawn.</summary>
         public void Launch(Vector2 direction, float speed, int damage, float knockbackForce,
                            LayerMask targetLayers, LayerMask blockingLayers, float lifetime,
@@ -70,7 +73,8 @@ namespace Kagemura.Player.Weapons
                 // those aren't the same direction.
                 KnockbackDir = new Vector2(_direction.x, 0.2f).normalized,
                 KnockbackForce = _knockbackForce,
-                Source = _source
+                Source = _source,
+                HitStop = HitStop
             });
 
             if (_source != null && _source.TryGetComponent<Focus>(out var focus))

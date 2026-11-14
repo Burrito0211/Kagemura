@@ -49,6 +49,14 @@ namespace Kagemura.Systems
         /// the hook for a "perfect dodge" spark/sfx during the polish pass.</summary>
         public event Action<DamageInfo> OnDamageAvoided;
 
+        // --- The same three moments, for anything that wants every Health in the game ---
+        // Raised after the instance events, so a listener here sees the state those handlers
+        // left behind. Static, so subscribers MUST unsubscribe when they are disabled.
+        public static event Action<Health, DamageInfo> AnyDamaged;
+        public static event Action<Health, DamageInfo> AnyDamageAvoided;
+        /// <summary>The bool is true for a death by damage, false for <see cref="Kill"/>.</summary>
+        public static event Action<Health, bool> AnyDied;
+
         public int Current => _current;
         public int Max => maxHealth;
         public bool IsAlive => _current > 0;
@@ -106,6 +114,7 @@ namespace Kagemura.Systems
             if (IsInvulnerable)
             {
                 OnDamageAvoided?.Invoke(info);
+                AnyDamageAvoided?.Invoke(this, info);
                 return;
             }
 
@@ -116,6 +125,7 @@ namespace Kagemura.Systems
             if (_filter != null && !_filter.FilterDamage(ref resolved))
             {
                 OnDamageAvoided?.Invoke(resolved);
+                AnyDamageAvoided?.Invoke(this, resolved);
                 return;
             }
 
@@ -124,6 +134,7 @@ namespace Kagemura.Systems
             _current = Mathf.Max(0, _current - resolved.Amount);
             OnHealthChanged?.Invoke(_current, maxHealth);
             OnDamaged?.Invoke(resolved);
+            AnyDamaged?.Invoke(this, resolved);
 
             // Knockback (only meaningful on a dynamic body).
             if (_rb != null && _rb.bodyType == RigidbodyType2D.Dynamic && resolved.KnockbackForce > 0f)
@@ -135,7 +146,7 @@ namespace Kagemura.Systems
                 _flashRoutine = StartCoroutine(Flash());
             }
 
-            if (_current <= 0) Die();
+            if (_current <= 0) Die(killedByHit: true);
         }
 
         /// <summary>
@@ -152,7 +163,7 @@ namespace Kagemura.Systems
 
             _current = 0;
             OnHealthChanged?.Invoke(_current, maxHealth);
-            Die();
+            Die(killedByHit: false);
         }
 
         public void Heal(int amount)
@@ -162,9 +173,10 @@ namespace Kagemura.Systems
             OnHealthChanged?.Invoke(_current, maxHealth);
         }
 
-        private void Die()
+        private void Die(bool killedByHit)
         {
             OnDied?.Invoke();
+            AnyDied?.Invoke(this, killedByHit);
             if (destroyOnDeath) Destroy(gameObject);
         }
 

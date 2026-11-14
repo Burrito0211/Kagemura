@@ -50,6 +50,9 @@ namespace Kagemura.Enemies
         /// <summary>Raised when phase 2 begins, for the arena change, music swap and screen shake.</summary>
         public event System.Action<int> OnPhaseChanged;
 
+        /// <summary>The same moment for listeners that don't hold a reference to the boss.</summary>
+        public static event System.Action<BossController, int> AnyPhaseChanged;
+
         // Phase 2 sharpens the numbers rather than replacing them, so every timing below is the
         // asset's value scaled — one place to tune, and phase 1 stays the reference.
         private float WindupTime => data.windupTime * (_phase == 2 ? _boss.phase2WindupScale : 1f);
@@ -286,6 +289,7 @@ namespace Kagemura.Enemies
             Enter(State.Approach);
 
             OnPhaseChanged?.Invoke(_phase);
+            AnyPhaseChanged?.Invoke(this, _phase);
         }
 
         /// <summary>Back to the body colour for the current phase — red for the rest of the fight.</summary>

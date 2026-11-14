@@ -53,7 +53,8 @@ namespace Kagemura.Player.Specials
         [Header("Feedback")]
         [Tooltip("Sprite tint while the ability is running. Placeholder until the anims exist.")]
         public Color tint = new Color(1f, 0.85f, 0.4f);
-        [Tooltip("Hit-stop on connect. Wired up during the polish pass.")]
+        [Tooltip("Seconds the game freezes when the special connects. Also sets how hard the " +
+                 "camera shakes (Feel Settings > trauma per second of hit-stop).")]
         public float hitStopDuration = 0.08f;
     }
 }

@@ -128,6 +128,7 @@ namespace Kagemura.Player.Weapons
                 : BuildGreyboxArrow(spawn);
 
             arrow.FocusOnHit = data.focusPerHit;
+            arrow.HitStop = data.hitStopDuration;
             arrow.Launch(direction, speed, damage, data.knockbackForce, targetLayers,
                          blockingLayers, data.projectileLifetime, gameObject);
         }

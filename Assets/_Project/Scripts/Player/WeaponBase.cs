@@ -117,7 +117,8 @@ namespace Kagemura.Player
                         HitPoint = col.ClosestPoint(center),
                         KnockbackDir = new Vector2(facing, 0.25f).normalized,
                         KnockbackForce = data.knockbackForce,
-                        Source = gameObject
+                        Source = gameObject,
+                        HitStop = data.hitStopDuration
                     };
                     target.TakeDamage(info);
                     OnHitTarget(col, info);

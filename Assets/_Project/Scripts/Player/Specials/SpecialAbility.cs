@@ -191,7 +191,8 @@ namespace Kagemura.Player.Specials
                     HitPoint = col.ClosestPoint(center),
                     KnockbackDir = knockDir ?? RadialKnock(center, col),
                     KnockbackForce = data.knockbackForce,
-                    Source = gameObject
+                    Source = gameObject,
+                    HitStop = data.hitStopDuration
                 });
                 count++;
             }

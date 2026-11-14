@@ -1,3 +1,4 @@
+using Kagemura.Feel;
 using UnityEngine;
 
 namespace Kagemura.CameraRig
@@ -26,6 +27,7 @@ namespace Kagemura.CameraRig
         [SerializeField] private float fixedY = 0f;
 
         private Vector3 _velocity;
+        private Vector3 _appliedShake;
 
         private void LateUpdate()
         {
@@ -35,7 +37,13 @@ namespace Kagemura.CameraRig
             if (!followVertical)
                 desired.y = fixedY + offset.y;
 
-            transform.position = Vector3.SmoothDamp(transform.position, desired, ref _velocity, smoothTime);
+            // Take last frame's shake back off before smoothing, so the follow tracks where the
+            // camera really rests and never chases its own shake.
+            Vector3 rest = transform.position - _appliedShake;
+            rest = Vector3.SmoothDamp(rest, desired, ref _velocity, smoothTime);
+
+            _appliedShake = ScreenShake.Offset;
+            transform.position = rest + _appliedShake;
         }
 
         /// <summary>Assign the follow target at runtime (e.g., after spawning the player).</summary>
